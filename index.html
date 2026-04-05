@@ -488,7 +488,7 @@
     </div>
     <div class="log-input-row">
       <input class="log-input" id="logInput" type="text" placeholder="やったこと・あったこと…"
-        onkeydown="if(event.key==='Enter')addLog()">
+        onkeydown="if(event.key==='Enter' && !event.isComposing)addLog()">
       <button class="log-mood-btn" id="logMoodBtn" onclick="toggleLogMood()">😊</button>
       <button class="log-add-btn" onclick="addLog()">+</button>
     </div>
