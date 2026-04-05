@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ã­ã£ããæ¥è¨">
+  <meta name="apple-mobile-web-app-title" content="キャッチ日記">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#e8673a">
-  <title>ã­ã£ããæ¥è¨ ð¦</title>
+  <title>キャッチ日記 🦋</title>
   <style>
     :root {
       --warm: #f9a86a; --deep: #e8673a; --bg: #fdf6ee; --card: #ffffff;
@@ -26,10 +26,10 @@
       overflow-x: hidden;
     }
 
-    /* âââ å±éã¦ã¼ãã£ãªãã£ âââ */
+    /* ─── 共通ユーティリティ ─── */
     .hidden { display: none !important; }
 
-    /* âââ ãããã¼ âââ */
+    /* ─── ヘッダー ─── */
     .header {
       background: linear-gradient(135deg, var(--warm) 0%, var(--deep) 100%);
       padding: 16px 18px 13px; display: flex; align-items: center; justify-content: space-between;
@@ -49,11 +49,11 @@
       padding: 4px 11px; color: white; font-size: 12px; font-weight: 700;
     }
 
-    /* âââ ã¿ãã³ã³ãã³ã âââ */
+    /* ─── タブコンテンツ ─── */
     .tab-content { display: none; padding: 0 16px 100px; }
     .tab-content.active { display: block; }
 
-    /* âââ ããã ãã âââ */
+    /* ─── ボトムナビ ─── */
     .bottom-nav {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 430px;
@@ -69,9 +69,9 @@
     .nav-item .nav-label { font-size: 10px; font-weight: 700; color: var(--sub); margin-top: 2px; }
     .nav-item.active .nav-label { color: var(--deep); }
 
-    /* ââââââââââââââââââââââââââââââ
-       TAB 1 : ã­ã£ããï¼ã¡ã¤ã³ç»é¢ï¼
-       ââââââââââââââââââââââââââââââ */
+    /* ══════════════════════════════
+       TAB 1 : キャッチ（メイン画面）
+       ══════════════════════════════ */
     .greeting {
       margin-top: 20px; font-size: 13px; color: var(--sub); font-weight: 600;
     }
@@ -79,7 +79,7 @@
       font-size: 22px; font-weight: 800; color: var(--txt); margin-top: 2px;
     }
 
-    /* Claudeè³ªåã«ã¼ã */
+    /* Claude質問カード */
     .q-card {
       margin-top: 16px; background: white;
       border-radius: 22px; padding: 18px 18px 16px;
@@ -106,7 +106,7 @@
       color: var(--sub);
     }
 
-    /* åç­ã¨ãªã¢ */
+    /* 回答エリア */
     .answer-area { margin-top: 14px; }
     .answer-row { display: flex; gap: 8px; align-items: flex-end; }
     .answer-input {
@@ -134,7 +134,7 @@
     }
     .voice-status.show { display: block; }
 
-    /* æ°åã»åçã»éä¿¡ */
+    /* 気分・写真・送信 */
     .extras-row {
       display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap;
     }
@@ -154,7 +154,7 @@
     .send-btn:active { transform: scale(0.96); }
     #mainFileInput { display: none; }
 
-    /* æ°æã¡ããã«ã¼ï¼ã¡ã¤ã³ç»é¢ç¨ï¼ */
+    /* 気持ちピッカー（メイン画面用） */
     .mood-tray {
       display: none; flex-wrap: wrap; gap: 6px;
       margin-top: 8px; padding: 8px;
@@ -167,7 +167,7 @@
     }
     .mood-opt.selected { border-color: var(--pink); background: #fff0f5; }
 
-    /* åçãã¬ãã¥ã¼ */
+    /* 写真プレビュー */
     .photo-thumb-wrap { display: none; position: relative; margin-top: 8px; }
     .photo-thumb-wrap.show { display: block; }
     .photo-thumb {
@@ -180,7 +180,7 @@
       font-size: 12px; display: flex; align-items: center; justify-content: center;
     }
 
-    /* ãã£ã¨ã­ã£ãã */
+    /* もっとキャッチ */
     .more-catch {
       margin-top: 16px; display: flex; gap: 9px;
     }
@@ -201,7 +201,7 @@
       font-size: 11px; color: var(--sub); font-weight: 600; margin-top: 20px; margin-bottom: 8px;
     }
 
-    /* âââ ä»æ¥ã®ããã âââ */
+    /* ─── 今日のきろく ─── */
     .log-card {
       margin-top: 16px; background: white; border-radius: 20px;
       padding: 16px; box-shadow: 0 3px 14px rgba(0,0,0,0.06);
@@ -258,12 +258,12 @@
     .log-empty { font-size: 13px; color: #c4b4ac; text-align: center; padding: 12px 0; }
     .log-hint { font-size: 11px; color: #c4b4ac; margin-top: 6px; text-align: center; }
 
-    /* ä»æ¥ã®ã­ã£ããï¼ã¡ã¤ã³ç»é¢ä¸é¨ï¼ */
+    /* 今日のキャッチ（メイン画面下部） */
     .today-entries { margin-top: 10px; }
 
-    /* ââââââââââââââââââââââââââââââ
-       TAB 2 : ã¿ã¤ã ã©ã¤ã³
-       ââââââââââââââââââââââââââââââ */
+    /* ══════════════════════════════
+       TAB 2 : タイムライン
+       ══════════════════════════════ */
     .entry-card {
       background: white; border-radius: 18px;
       padding: 13px 14px; margin-bottom: 10px;
@@ -290,9 +290,9 @@
     }
     .date-divider::before{left:0} .date-divider::after{right:0}
 
-    /* ââââââââââââââââââââââââââââââ
-       TAB 3 : ãµãããã
-       ââââââââââââââââââââââââââââââ */
+    /* ══════════════════════════════
+       TAB 3 : ふりかえり
+       ══════════════════════════════ */
     .reflect-section { margin-top: 16px; }
     .reflect-card {
       background: white; border-radius: 18px; padding: 16px;
@@ -305,13 +305,13 @@
     .stat-num  { font-size: 26px; font-weight: 800; color: var(--deep); }
     .stat-label { font-size: 10px; color: var(--sub); margin-top: 2px; }
 
-    /* æ°åãã£ã¼ãï¼ã·ã³ãã«ãªãããè¡¨ç¤ºï¼ */
+    /* 気分チャート（シンプルなドット表示） */
     .mood-week { display: flex; gap: 4px; align-items: flex-end; justify-content: space-around; }
     .mood-day { text-align: center; }
     .mood-day-label { font-size: 10px; color: var(--sub); }
     .mood-day-emoji { font-size: 22px; display: block; margin-top: 4px; }
 
-    /* éå»ã®ãã¤ã©ã¤ã */
+    /* 過去のハイライト */
     .past-entry {
       background: var(--bg); border-radius: 12px; padding: 10px 12px;
       margin-top: 8px; font-size: 13px; line-height: 1.5; color: var(--txt);
@@ -326,7 +326,7 @@
     .si-title { font-size: 13px; font-weight: 700; color: var(--deep); margin-bottom: 6px; }
     .si-text  { font-size: 13px; line-height: 1.6; color: #7a5c4c; }
 
-    /* âââ ã¨ã¯ã¹ãã¼ãã¢ã¼ãã« âââ */
+    /* ─── エクスポートモーダル ─── */
     .modal-bg {
       display:none; position:fixed; inset:0;
       background:rgba(40,28,22,0.5); z-index:200;
@@ -352,7 +352,7 @@
       padding:12px; font-size:14px; font-weight:700; color:var(--sub); cursor:pointer;
     }
 
-    /* âââ è¿½å ã­ã£ããã¢ã¼ãã« âââ */
+    /* ─── 追加キャッチモーダル ─── */
     .catch-modal-bg {
       display:none; position:fixed; inset:0;
       background:rgba(40,28,22,0.5); z-index:200;
@@ -402,7 +402,7 @@
       display:flex; align-items:center; justify-content:center;
     }
 
-    /* âââ ãã¼ã¹ã âââ */
+    /* ─── トースト ─── */
     .toast {
       position:fixed; bottom:80px; left:50%;
       transform:translateX(-50%) translateY(16px);
@@ -420,212 +420,687 @@
 </head>
 <body>
 
-<!-- âââ ãããã¼ âââ -->
+<!-- ═══ ヘッダー ═══ -->
 <div class="header">
   <div>
-    <div class="header-title">ð¦ ã­ã£ããæ¥è¨</div>
+    <div class="header-title">🦋 キャッチ日記</div>
     <div class="header-date" id="hDate"></div>
   </div>
   <div class="header-right">
-    <button class="hdr-btn" onclick="openExport()" title="æ¸ãåºã">ð¾</button>
-    <div class="streak-badge" id="streak">â¨ 0æ¥</div>
+    <button class="hdr-btn" onclick="openExport()" title="書き出す">💾</button>
+    <div class="streak-badge" id="streak">✨ 0日</div>
   </div>
 </div>
 
-<!-- âââ TAB 1 : ã­ã£ãã âââ -->
+<!-- ═══ TAB 1 : キャッチ ═══ -->
 <div class="tab-content active" id="tab-catch">
-  <div class="greeting" id="greetText">ãã¯ãã</div>
-  <div class="greeting-name">naoãããä»æ¥ã¯ã©ããªæ¥ï¼</div>
+  <div class="greeting" id="greetText">おはよう</div>
+  <div class="greeting-name">naoさん、今日はどんな日？</div>
 
   <div class="q-card">
-    <button class="q-refresh" onclick="nextQ()">ð</button>
-    <span class="q-strength-chip" id="qChip">ð¡ çæ³</span>
-    <div class="q-text" id="qText">èª­ã¿è¾¼ã¿ä¸­â¦</div>
+    <button class="q-refresh" onclick="nextQ()">🔄</button>
+    <span class="q-strength-chip" id="qChip">💡 着想</span>
+    <div class="q-text" id="qText">読み込み中…</div>
     <div class="answer-area">
       <div class="answer-row">
-        <textarea class="answer-input" id="mainInput" rows="2" placeholder="ããã«æ¸ãã¦ã­ãå£°ã§ãOKð¤"
+        <textarea class="answer-input" id="mainInput" rows="2" placeholder="ここに書いてね。声でもOK🎤"
           oninput="autoGrow(this)"></textarea>
-        <button class="mic-btn" id="micBtn" onclick="toggleVoice()">ð¤</button>
+        <button class="mic-btn" id="micBtn" onclick="toggleVoice()">🎤</button>
       </div>
-      <div class="voice-status" id="voiceSt">ð´ è´ãã¦ããâ¦è©±ãããã¦</div>
+      <div class="voice-status" id="voiceSt">🔴 聴いてるよ…話しかけて</div>
 
-      <!-- åçãã¬ãã¥ã¼ -->
+      <!-- 写真プレビュー -->
       <div class="photo-thumb-wrap" id="mainPhotoWrap">
         <img class="photo-thumb" id="mainPhotoImg" src="">
-        <button class="photo-thumb-rm" onclick="removeMainPhoto()">â</button>
+        <button class="photo-thumb-rm" onclick="removeMainPhoto()">✕</button>
       </div>
 
-      <!-- æ°åããã«ã¼ -->
+      <!-- 気分ピッカー -->
       <div class="mood-tray" id="moodTray">
-        <button class="mood-opt" onclick="pickMood(this,'ð')">ð</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð')">ð</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð')">ð</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð¥°')">ð¥°</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð¤')">ð¤</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð´')">ð´</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð¤')">ð¤</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð¢')">ð¢</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð¤©')">ð¤©</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð')">ð</button>
-        <button class="mood-opt" onclick="pickMood(this,'ð« ')">ð« </button>
-        <button class="mood-opt" onclick="pickMood(this,'ð¤')">ð¤</button>
+        <button class="mood-opt" onclick="pickMood(this,'😊')">😊</button>
+        <button class="mood-opt" onclick="pickMood(this,'😄')">😄</button>
+        <button class="mood-opt" onclick="pickMood(this,'😌')">😌</button>
+        <button class="mood-opt" onclick="pickMood(this,'🥰')">🥰</button>
+        <button class="mood-opt" onclick="pickMood(this,'🤔')">🤔</button>
+        <button class="mood-opt" onclick="pickMood(this,'😴')">😴</button>
+        <button class="mood-opt" onclick="pickMood(this,'😤')">😤</button>
+        <button class="mood-opt" onclick="pickMood(this,'😢')">😢</button>
+        <button class="mood-opt" onclick="pickMood(this,'🤩')">🤩</button>
+        <button class="mood-opt" onclick="pickMood(this,'😎')">😎</button>
+        <button class="mood-opt" onclick="pickMood(this,'🫠')">🫠</button>
+        <button class="mood-opt" onclick="pickMood(this,'🤗')">🤗</button>
       </div>
 
       <div class="extras-row">
-        <button class="mood-btn" onclick="toggleMoodTray()">ð ããã¡</button>
-        <button class="photo-btn-small" onclick="document.getElementById('mainFileInput').click()">ð· åç</button>
+        <button class="mood-btn" onclick="toggleMoodTray()">😊 きもち</button>
+        <button class="photo-btn-small" onclick="document.getElementById('mainFileInput').click()">📷 写真</button>
         <input type="file" id="mainFileInput" accept="image/*" capture="environment" onchange="handleMainPhoto(event)">
-        <button class="send-btn" onclick="submitMain()">ã­ã£ããï¼ð¦</button>
+        <button class="send-btn" onclick="submitMain()">キャッチ！🦋</button>
       </div>
     </div>
   </div>
 
-  <!-- ä»æ¥ã®ããã -->
+  <!-- 今日のきろく -->
   <div class="log-card">
     <div class="log-header">
-      <div class="log-title">ð ä»æ¥ã®ããã</div>
-      <div class="log-count" id="logCount">0ä»¶</div>
+      <div class="log-title">📝 今日のきろく</div>
+      <div class="log-count" id="logCount">0件</div>
     </div>
     <div class="log-input-row">
-      <input class="log-input" id="logInput" type="text" placeholder="ãã£ããã¨ã»ãã£ããã¨â¦"
+      <input class="log-input" id="logInput" type="text" placeholder="やったこと・あったこと…"
         onkeydown="if(event.key==='Enter')addLog()">
-      <button class="log-mood-btn" id="logMoodBtn" onclick="toggleLogMood()">ð</button>
+      <button class="log-mood-btn" id="logMoodBtn" onclick="toggleLogMood()">😊</button>
       <button class="log-add-btn" onclick="addLog()">+</button>
     </div>
     <div class="log-mood-picker" id="logMoodPicker">
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð')">ð</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð')">ð</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð')">ð</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð¥°')">ð¥°</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð¤')">ð¤</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð´')">ð´</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð¤')">ð¤</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð¢')">ð¢</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð¤©')">ð¤©</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð')">ð</button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð« ')">ð« </button>
-      <button class="log-mood-opt" onclick="pickLogMood(this,'ð¤')">ð¤</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😊')">😊</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😄')">😄</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😌')">😌</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🥰')">🥰</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🤔')">🤔</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😴')">😴</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😤')">😤</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😢')">😢</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🤩')">🤩</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😎')">😎</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🫠')">🫠</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🤗')">🤗</button>
     </div>
-    <div class="log-hint">ãã£ããã¨æ¸ãã¦ï¼ã§è¿½å ãæ°åã¯ðã§é¸ã¹ãã</div>
+    <div class="log-hint">やったこと書いて＋で追加。気分は😊で選べる。</div>
     <div class="log-list" id="logList">
-      <div class="log-empty">ä»æ¥ã¯ã¾ã ä½ããªããä½ããï¼</div>
+      <div class="log-empty">今日はまだ何もなし。何した？</div>
     </div>
   </div>
 
-  <!-- ãã£ã¨ã­ã£ãã -->
-  <div class="more-label">ãã£ã¨ã­ã£ãããããã¨ã</div>
+  <!-- もっとキャッチ -->
+  <div class="more-label">もっとキャッチしたいとき</div>
   <div class="more-catch">
     <button class="more-btn t-hl" onclick="openCatchModal('highlight')">
-      <span class="mb-emoji">ð</span><span class="mb-label">ãã¤ã©ã¤ã</span>
+      <span class="mb-emoji">🌟</span><span class="mb-label">ハイライト</span>
     </button>
     <button class="more-btn t-id" onclick="openCatchModal('idea')">
-      <span class="mb-emoji">ð¡</span><span class="mb-label">ã¢ã¤ãã¢</span>
+      <span class="mb-emoji">💡</span><span class="mb-label">アイデア</span>
     </button>
     <button class="more-btn t-fl" onclick="openCatchModal('feeling')">
-      <span class="mb-emoji">â¤ï¸</span><span class="mb-label">ããã¡</span>
+      <span class="mb-emoji">❤️</span><span class="mb-label">きもち</span>
     </button>
     <button class="more-btn t-ph" onclick="openCatchModal('photo')">
-      <span class="mb-emoji">ð·</span><span class="mb-label">åç</span>
+      <span class="mb-emoji">📷</span><span class="mb-label">写真</span>
     </button>
   </div>
 
-  <!-- ä»æ¥ã®è¨é²ãã¬ãã¥ã¼ -->
-  <div class="more-label">ä»æ¥ã®ã­ã£ãã <span id="todayCount">0</span>ä»¶</div>
+  <!-- 今日の記録プレビュー -->
+  <div class="more-label">今日のキャッチ <span id="todayCount">0</span>件</div>
   <div id="todayEntries" class="today-entries"></div>
 </div>
 
-<!-- âââ TAB 2 : ã¿ã¤ã ã©ã¤ã³ âââ -->
+<!-- ═══ TAB 2 : タイムライン ═══ -->
 <div class="tab-content" id="tab-timeline">
   <div style="margin-top:14px;" id="timeline"></div>
 </div>
 
-<!-- âââ TAB 3 : ãµãããã âââ -->
+<!-- ═══ TAB 3 : ふりかえり ═══ -->
 <div class="tab-content" id="tab-reflect">
   <div class="reflect-section">
     <div class="reflect-card">
-      <div class="reflect-title">ð ä»é±ã®ã­ã£ãã</div>
+      <div class="reflect-title">📊 今週のキャッチ</div>
       <div class="stat-row" id="weekStats">
-        <div class="stat-item"><div class="stat-num" id="ws0">0</div><div class="stat-label">ð</div></div>
-        <div class="stat-item"><div class="stat-num" id="ws1">0</div><div class="stat-label">ð¡</div></div>
-        <div class="stat-item"><div class="stat-num" id="ws2">0</div><div class="stat-label">â¤ï¸</div></div>
-        <div class="stat-item"><div class="stat-num" id="ws3">0</div><div class="stat-label">ð·</div></div>
-        <div class="stat-item"><div class="stat-num" id="ws4">0</div><div class="stat-label">ð</div></div>
-        <div class="stat-item"><div class="stat-num" id="wsAll">0</div><div class="stat-label">åè¨</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws0">0</div><div class="stat-label">🌟</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws1">0</div><div class="stat-label">💡</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws2">0</div><div class="stat-label">❤️</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws3">0</div><div class="stat-label">📷</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws4">0</div><div class="stat-label">📝</div></div>
+        <div class="stat-item"><div class="stat-num" id="wsAll">0</div><div class="stat-label">合計</div></div>
       </div>
     </div>
     <div class="reflect-card">
-      <div class="reflect-title">ð ä»é±ã®æ°å</div>
+      <div class="reflect-title">😊 今週の気分</div>
       <div class="mood-week" id="moodWeek"></div>
     </div>
     <div class="reflect-card">
-      <div class="reflect-title">ð® ãµããããã®ãã³ã</div>
+      <div class="reflect-title">🔮 ふりかえりのヒント</div>
       <div id="reflectHint" class="si-text"></div>
     </div>
     <div class="strength-insight" id="strengthCard">
-      <div class="si-title">ð§¬ naoããã®å¼·ã¿ã¡ã¢</div>
+      <div class="si-title">🧬 naoさんの強みメモ</div>
       <div class="si-text" id="strengthText"></div>
     </div>
   </div>
 </div>
 
-<!-- âââ ããã ãã âââ -->
+<!-- ═══ ボトムナビ ═══ -->
 <div class="bottom-nav">
   <button class="nav-item active" onclick="switchTab('catch',this)">
-    <span class="nav-icon">ð¦</span><span class="nav-label">ã­ã£ãã</span>
+    <span class="nav-icon">🦋</span><span class="nav-label">キャッチ</span>
   </button>
   <button class="nav-item" onclick="switchTab('timeline',this)">
-    <span class="nav-icon">ð</span><span class="nav-label">ã¿ã¤ã ã©ã¤ã³</span>
+    <span class="nav-icon">📖</span><span class="nav-label">タイムライン</span>
   </button>
   <button class="nav-item" onclick="switchTab('reflect',this)">
-    <span class="nav-icon">ð®</span><span class="nav-label">ãµãããã</span>
+    <span class="nav-icon">🔮</span><span class="nav-label">ふりかえり</span>
   </button>
 </div>
 
-<!-- âââ è¿½å ã­ã£ããã¢ã¼ãã« âââ -->
+<!-- ═══ 追加キャッチモーダル ═══ -->
 <div class="catch-modal-bg" id="catchModalBg" onclick="if(event.target.id==='catchModalBg')closeCatchModal()">
   <div class="catch-modal">
     <div class="cm-header">
-      <span class="cm-icon" id="cmIcon">ð</span>
-      <div><div class="cm-title" id="cmTitle">ãã¤ã©ã¤ã</div>
-      <div class="cm-sub" id="cmSub">1è¡ã§OK</div></div>
+      <span class="cm-icon" id="cmIcon">🌟</span>
+      <div><div class="cm-title" id="cmTitle">ハイライト</div>
+      <div class="cm-sub" id="cmSub">1行でOK</div></div>
     </div>
     <div class="cm-photo-wrap" id="cmPhotoWrap">
       <img class="cm-photo-img" id="cmPhotoImg" src="">
-      <button class="cm-photo-rm" onclick="removeCmPhoto()">â</button>
+      <button class="cm-photo-rm" onclick="removeCmPhoto()">✕</button>
     </div>
-    <textarea class="cm-textarea" id="cmInput" rows="3" placeholder="ããã«æ¸ãã¦ã­â¦"></textarea>
-    <button class="cm-photo-btn" id="cmPhotoBtn" onclick="document.getElementById('catchFileInput').click()">ð· åçãæ·»ä»ãã</button>
+    <textarea class="cm-textarea" id="cmInput" rows="3" placeholder="ここに書いてね…"></textarea>
+    <button class="cm-photo-btn" id="cmPhotoBtn" onclick="document.getElementById('catchFileInput').click()">📷 写真を添付する</button>
     <input type="file" id="catchFileInput" accept="image/*" capture="environment" onchange="handleCmPhoto(event)">
     <div class="cm-actions">
-      <button class="cm-cancel" onclick="closeCatchModal()">ããã</button>
-      <button class="cm-save" onclick="saveCatchModal()">ã­ã£ããï¼ð¦</button>
+      <button class="cm-cancel" onclick="closeCatchModal()">やめる</button>
+      <button class="cm-save" onclick="saveCatchModal()">キャッチ！🦋</button>
     </div>
   </div>
 </div>
 
-<!-- âââ ã¨ã¯ã¹ãã¼ãã¢ã¼ãã« âââ -->
+<!-- ═══ エクスポートモーダル ═══ -->
 <div class="modal-bg" id="expBg" onclick="if(event.target.id==='expBg')closeExport()">
   <div class="exp-modal">
-    <h3>ð¾ ãã¼ã¿ãæ¸ãåºã</h3>
-    <p>ã¢ããªåããã¨ãã®å¼ã£è¶ãã«ä½¿ãã¾ãã</p>
+    <h3>💾 データを書き出す</h3>
+    <p>アプリ化するときの引っ越しに使えます。</p>
     <div class="exp-opts">
       <button class="exp-opt-btn" onclick="doExportJSON()">
-        <div class="exp-ot">ð¦ JSONã§ä¿å­</div>
-        <div class="exp-od">å®å¨ãªãã¼ã¿ãåçè¾¼ã¿ãã¢ããªç§»è¡ç¨ã</div>
+        <div class="exp-ot">📦 JSONで保存</div>
+        <div class="exp-od">完全なデータ。写真込み。アプリ移行用。</div>
       </button>
       <button class="exp-opt-btn" onclick="doExportText()">
-        <div class="exp-ot">ð ãã­ã¹ãã§ä¿å­</div>
-        <div class="exp-od">ã¡ã¢ã¢ããªã«è²¼ããèª­ã¿ãããohfVå¼ãKØà ÂöFcà¢Âö'WGFöãà¢ÂöFcà¢Æ'WGFöâ6Æ73Ò&'FâÖ6Æ÷6RÖW"öæ6Æ6³Ò&6Æ÷6TW÷'B#îhyn8(³Âö'WGFöãà¢ÂöFcà£ÂöFcà £ÆFb6Æ73Ò'Fö7B"CÒ'Fö7B#ãÂöFcà £Ç67&Cà¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢æFWVDD ¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦6öç7BD#Ò46F6F'D"rÂdU#ÓÂ5CÒvVçG&W2s°¦ÆWBF#ÖçVÆÃ°¦gVæ7FöâF$÷Vâ°¢&WGW&âæWr&öÖ6Rö²ÆærÓç°¢6öç7B#ÖæFWVDD"æ÷VâD"ÅdU"°¢"æöçWw&FVæVVFVCÖSÓç°¢6öç7BCÖRçF&vWBç&W7VÇC°¢bBæö&¦V7E7F÷&TæÖW2æ6öçFç25B°¢6öç7B3ÖBæ7&VFTö&¦V7E7F÷&R5BÇ¶¶WF¢vBwÒ°¢2æ7&VFTæFWwG2rÂwG2rÇ·VæVS¦fÇ6WÒ°¢Ð¢Ó°¢"æöç7V66W73ÖSÓç¶F#ÖRçF&vWBç&W7VÇC¶ö²F"Ó°¢"æöæW'&÷#ÖSÓæærRçF&vWBæW'&÷"°¢Ò°§Ð¦gVæ7FöâF$FBR°¢&WGW&âæWr&öÖ6Rö²ÆærÓç°¢6öç7BGÖF"çG&ç67Föâ5BÂw&VGw&FRr°¢Gæö&¦V7E7F÷&R5BæFBR²Gæöæ6ö×ÆWFSÖö³²GæöæW'&÷#ÖS#ÓæærS"çF&vWBæW'&÷"°¢Ò°§Ð¦gVæ7FöâF$ÆÂ°¢&WGW&âæWr&öÖ6Rö²ÆærÓç°¢6öç7B#ÖF"çG&ç67Föâ5BÂw&VFöæÇræö&¦V7E7F÷&R5BææFWwG2rævWDÆÂ°¢"æöç7V66W73ÖSÓæö²WF&vWBç&W7VÇBç&WfW'6R°¢"æöæW'&÷#ÖSÓæærRçF&vWBæW'&÷"°¢Ò°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢88~8;Î8+þ8¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦ÆWBVçG&W3ÕµÒÂGÓÂÖå÷FóÖçVÆÂÂÖäÖööCÒrrÂ6Õ÷FóÖçVÆÂÂ6ÕGSÒvvÆvBs°¦ÆWB&V6övæFöãÖçVÆÂÂ5&V3ÖfÇ6S° ¦6öç7BD3×°¢vÆvC§¶6öã¢	øÉòrÇc¡Þ88þ8*N8:8*N88rÇ3¢~Zèiz^8.8>8þ8>8ûÈ(`Ì/xÑý_ýØ#û¸2²rÂFt6Ç3¢wFrÖÂrÇFtÃ¢	øÉò88þ8*N8:8*N88wÒÀ¢FV¢¶6öã¢	ù*rÇC¢~8*.8*N88~8*"rÂ3¢~
-Þ8¾8N8>8ûÈijÞ~8tô¾ûÈrÂFt6Ç3¢wFrÖBrÇFtÃ¢	ù*8*.8*N88~8*"wÒÀ¢fVVÆæs¢¶6öã¢~)ÚNûòrÇC¢~8Þ8(.8rÂ3¢~{[^ih~ZÙ~888~8($ô²rÂFt6Ç3¢wFrÖfÂrÇFtÃ¢~)ÚNûò8Þ8(.8wÒÀ¢÷Fó¢¶6öã¢	ù;rrÇC¢~XiyÉòrÂ3¢~XiyÉþûÈ¾8).88(®8.88(²rÂFt6Ç3¢wFr×rÇFtÃ¢	ù;rXiyÉòwÒÀ¢6ÆVFS¢¶6öã¢	úIbrÇC¢t6ÆVF^88îùNK¨²rÇ3¢rrÂFt6Ç3¢wFrÖ6ÂrÇFtÃ¢	úIb6ÆVFRwÒÀ¢Æös¢¶6öã¢	ù9ÒrÇC¢~8Þ8(Þ8òrÂ3¢~K¸®iz^8(.8>8þ8>8rÂFt6Ç3¢wFrÖÆörrÇFtÃ¢	ù9Ò8Þ8(Þ8òwÒÀ§Ó° ¢ò¢)H)H:®YXþûÈæþ8^8)>8ã^8N8î[Ë~8þ8¾Yû®8^8N8nÞûÈ)H)H¢ð¦6öç7B3Õ°¢ò¢yØh;2FVFöâ¢ð¢·¢~K¸®iz^8KÙ^8¾8Î8.ûÈ8Þ8>8n8.8(8(8N8þ8>88þ8>8þûÉòrÂ6C¢~yØh;2rÆ6Ç3¢v6ÖFVFöâwÒÀ¢·¢~iÈù8
-Þ8¾kZî8¾8)>88*.8*N88~8*.8(N8Î8(N8>8n8þ8þ8N8>88Þ8þ8.8(¾ûÉòrÂ6C¢~yØh;2rÆ6Ç3¢v6ÖFVFöâwÒÀ¢·¢~Ú.yÞ8N{XN8þY8(þ8¾8(N8ik8~8Ny®h¾8þ8.8>8þûÉþ[þ8^8þ8n8($ô²rÂ6C¢~yØh;2rÆ6Ç3¢v6ÖFVFöâwÒÀ¢·¢~iÈùªÞ8)>88;¾h¾8þ8;¾î8N8þ8(.8î8~8[ø>8¾jè¾8>8þ8(.8þûÉòrÂ6C¢~yØh;2rÆ6Ç3¢v6ÖFVFöâwÒÀ¢·¢~8Î8>8(Î88>8(Î88N8®8Î8(¾8®8(.ûÉþ8Þ8>8nh	Þ8>8þ8>88.8(¾ûÉòrÂ6C¢~yØh;2rÆ6Ç3¢v6ÖFVFöâwÒÀ¢ò¢Xh^yÈçFVÆÆV7Föâ¢ð¢·¢~K¸®8
-Þ8îKÞ8~88(¾88(¾8~8n8(¾8>88þ8.8(¾ûÉþ8¾8®8(8®8þ8n8($ô²rÂ6C¢~Xh^yÈrÆ6Ç3¢v6ÖçFVÆÆV7BwÒÀ¢·¢~iÈù8z®Xn8¾8N8N8n8Îk	~8^8N8þ8>88Þ8þ8.8(¾ûÉòrÂ6C¢~Xh^yÈrÆ6Ç3¢v6ÖçFVÆÆV7BwÒÀ¢·¢~K¸®iz^8[ø>8Î8n8(þ8>88~8þyêÎi>8þ8N8N8º(Î8>8¾ûÉòrÂ6C¢~Xh^yÈrÆ6Ç3¢v6ÖçFVÆÆV7BwÒÀ¢·¢~iÈù8Xû>888(¾8>88~8.8~8þKÙVï¼òrÂ6C¢~Xh^yÈrÆ6Ç3¢v6ÖçFVÆÆV7BwÒÀ¢ò¢¾YÞh	Þ26öææV7FVFæW72¢ð¢·¢~K¸®iz^8×>:Þj+>8Þ8î28Þ8;Þ89®8~8;8 þj+>8þ8>88þ8.8(8>88n8þ8.8>8óòrÂ6C¢~¾YÞh	Þ2rÆ6Ç3¢v6Ö6öææV7BwÒÀ¢·¢~K¸®iz^88Î	.é8~8Þ8þûÈ8Þ8h	Þ8>8þGàiz^8þ8.8(¾8ûùòrÂ6C¢~¾YÞh	Þ2rÆ6Ç3¢v6Ö6öææV7BwÒÀ¢·¢~K¸®iz^88>8þ8~8.Þ8¾8þ8N8>88Þ8h	Þ8N8n88(¾ûÉòrÂ6C¢~¾YÞh	Þ2rÆ6Ç3¢v6Ö6öææV7BwÒÀ¢·¢~K¸®iz^8hIþÉÞ8~8þ8N8>88þ8.8(¾8ûùòrÂ6C¢~¾YÞh	Þ2rÆ6Ç3¢v6Ö6öææV7BwÒÀ¢ò¢Y¹î[ê[ù~Y	&W7F÷&FfR¢ð¢·¢~K¸®iz^8KÙn8¾8Îy¾®8~8Þ8~8ûÈûÈÞ8>88þ8.8>8Þûï)þ[þ8^8þ8n8($ô¼²6C¢~Y¹î[ê[ù~Y	rÆ6Ç3¢v6×&W7F÷&FfRwÒÀ¢·¢~8Î8(.8>88>8n8~8þ8N8®8Þ8>8nh	Þ8>8þ8>88þ8.8(¾ûÉòrÂ6C¢~Y¹î[ê[ù~Y	rÆ6Ç3¢v6×&W7F÷&FfRwÒÀ¢·¢~iÈù8z®Xn8îKÞ8~8Îþ8þ8®8>8þ8®8Þ8hIþ88(¾8>88þûÉòrÂ6C¢~Y¹î[ê[ù~Y	rÆ6Ç3¢v6×&W7F÷&FfRwÒÀ¢ò¢[ùÎh
-rFF&ÆG¢ð¢·¢~K¸®iz^8K¨h;>ZIn88>8þ8>88þKÙ^ûÉòrÂ6C¢~[ùÎh
-rrÆ6Ç3¢v6ÖFF&ÆRwÒÀ¢·¢~kX8(Î8¾ª¾8).K»¾8¾8n8n8î8þ8N8>8þ8>88þ8.8>8þûÉòrÂ6C¢~[ùÎh
-rrÆ6Ç3¢v6ÖFF&ÆRwÒÀ¢·¢~K¸®8>8îyêÎi>8KÙ^8).hIþ88n8(¾ûÉòrÂ6C¢~[ùÎh
-rrÆ6Ç3¢v6ÖFF&ÆRwÒÀ¢ò¢iz^[8;¾hIþi¢¢ð¢·¢~K¸®iz^8î88þ8*N8:8*N888þKÙ^ûÉþ8.88>88tô¾ûÈrÂ6C¢~K¸®iz^8î8>8rÆ6Ç3¢v6ÖFÇwÒÀ¢·¢~K¸®8îk	~Xn8)..8~Kè¾88(¾8KÙ^.ûÉòrÂ6C¢~K¸®iz^8î8>8rÆ6Ç3¢v6ÖFÇwÒÀ¢·¢~K¸®iz^9þ88þ8(.8î8~KyZ®8®8N8~8¾8>8þ8þûÉòrÂ6C¢~K¸®iz^8î8>8rÆ6Ç3¢v6ÖFÇwÒÀ¢·¢~K¸®iz^8zÉ8>8þyêÎi>8þ8.8>8þûÉòrÂ6C¢~K¸®iz^8î8>8rÆ6Ç3¢v6ÖFÇwÒÀ¢·¢~K¸®iz^8îz®888)>8®z®88>8þûÉòrÂ6C¢~K¸®iz^8î8>8rÆ6Ç3¢v6ÖFÇwÒÀ¢·¢~K¸®iz^8îk	~Xn8).{[^ih~ZÙ~8.88N8~88ûÉòrÂ6C¢~K¸®iz^8î8>8rÆ6Ç3¢v6ÖFÇwÒÀ¥Ó° ¢ò¢)H)H6ÆVF^ùNzÙNûÈ[Ë~8þX^ûÈ)H)H¢ð¦6öç7B$UÄU3×°¢~yØh;2s¢²~8Þ8î8.8(8(8Þ8ZJ~K¨¾8¾8~8nûÈ	ù*rÂ~yØh;>8îhÞ;Þ8ÎX¹^8N8n8(¾8ÞûÈ)ÊrÂ~Ú.yÞ8NûÈ8Þ8(ÎË.8~88N8buÒÀ¢~Xh^yÈs¢²~k{8þ>88(8(Î8(¾8î8æþ8^8)>8î[Ë~8þ88(rÂ~8¾8~8n8þ8(Î8n8.8(®8Î88o	ù)²rÂ~>8{i®88(¾8>8¾KêX
-N8Î8.8(¾)ÊuÒÀ¢~¾YÞh	Þ2s¢²~8N8®8Î8(®8).hIþ88(8(Î8(¾8î{Ji[_	øËòrÂ~8Þ8î{8ZJ~K¨¾8¾8~8brÂ~K«®88î8N8®8Î8(®8ÎX©¾8¾8®8(¾8ß	ù)²uÒÀ¢~Y¹î[ê[ù~Y	s¢²~8Þ8n8N8nk	~8^8Þ8Y¹î[ê[ù~Y	8îhÞ;Þ88(	ù*¢rÂ~jÊ8¾kK¾8¾8¾8ô¾ûÈrÂ~iKYhN8~8Þ8(¾8>8nh	Þ88(¾8>8z®KÙ>8Î88N8N)ÊuÒÀ¢~[ùÎh
-rs¢²~K¸®8¾¸nKÞ8~8Þ8n8(¾Îhº88Þ)ÊrÂ~iùN¹þ8¾X¹^88(¾8î888N8NhÞ;ÞûÈrÂ~kX8(Î8¾K~8(Î8n8(¾8ß	øÈ¢uÒÀ¢~K¸®iz^8î8>8s¥²~iY88n8þ8(Î8n8.8(®8Î88o	ù¢rÂ~8N8N8Þ888(>8)>88*Þ8:>88>888~8Þ8ÿ	úh²rÂ~8Þ8îyêÎi>8).Ë.8~8Þ8n8(8¾8>8þ)ÊuÒÀ§Ó° ¢ò¢)H)H[Ë~8þ8:8:")H)H¢ð¦6öç7B5E%õD3Õ°¢~yØh;>8îhÞ;ÞûÉ®8*.8*N88~8*.8þX{®8n8þ8(¾8888î88î8(8®8þ8n[Ù>xKn8.ijÞx~8).8*Þ8:>88>888~8n8®888[èÎ8¾8(z®xKn88N8®8Î8>8n8þ8(¾8"rÀ¢~Xh^yÈ8îhÞ;ÞûÉ®>88(¾8>88ÎZ[Þ8Þ88¾8(88¾8~8®8þ8n8(.8Î>88þ8Þ8>8z®KÙ>8).Ë.88(¾888~KêX
-N8Î8.8(¾8"rÀ¢~¾YÞh	Þ>8îhÞ;ÞûÉ®K«®8(N8:.88î8î8N8®8Î8(®8¾k	~8^8þX©¾8Î8.8(¾8.iz^8îKÞ8¾8Þ8î8N8®8Î8(®8Îh¾88n8þ8(¾8þ8®8"rÀ¢~Y¹î[ê[ù~Y	8îhÞ;ÞûÉ®8Î8(.8>88(8þ8~8þ8N8Þ8Îz®xKn8¾X{®8n8þ8(¾8.8Þ8(Î8þ[Ë8^88(>8®8þ8iÈZJ~8îjÚnY8"rÀ¢~[ùÎh
-~8îhÞ;ÞûÉ®yK¾	®8(®88(>8®8þ8n8(.8N8N8.8Þ8îiz^8îkX8(Î8î8î8îË.88(Î888Þ8(Î8ÎKyZ®z®xKn8¦æþ8^8)>8îË.8¾8®8(¾8"rÀ¥Ó° ¢ò¢)H)H8^8(®8¾88(®89.8;>88)H)H¢ð¦6öç7B$TdÄT5EôåE3Õ°¢~K¸®8îË.8).yË®8(8n8þ8n8.YÎ888n8;Î89î8Î{8(®ùN8~X{®8n8Þ8þ8(88Þ8(Î8ÎK¸®8ææþ8^8)>8¾88>8nZJ~X~8®8>88¾8(.8"rÀ¢~yØh;>8+þ8*N89~8öæþ8^8)>8þ8ijÞx~y¨N8®8*.8*N88~8*.8).8.88~h¾ùN88ik8~8N8N8®8Î8(®8Îh¾88(¾8>88ÎZI®8N8"rÀ¢~8þ8þ8^8)>i»88®8Niz^8Î8>8>8n8(.8{[^ih~ZÙ~8.88N8~8(.Ë.8Î8.8(Î8XØXn8.8ÎË.8Î8.8(¾8Þ8>8z®KÙ>8ÎZJ~K¨¾8"rÀ¢~Y¹î[ê[ù~Y	8î[Ë~8þ8Î8.8(¾8¾8(8hÊþ8(®ùN8(®8~8ÎjÊ8þ8>8n8~8(8n8Þ8Îz®xKn8¾X{®8n8þ8(¾8.8Þ8(Î8).8*.8*N88~8*.88~8n8*Þ8:>88>888~8n8"rÀ¢~hIþi®y¨N8¾hIþ88þ8>88).8¾88(¾[ø^h8þ8®8N8.XiyÉóié®8{[^ih~ZÙ~8#:8N88Þ8(Î8(.z¸¾kKî8®Ë.8"rÀ¥Ó° ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢[~X¹P¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦Fö7VÖVçBævWDVÆVÖVçD'BvFFRrçFWD6öçFVçCÐ¢æWrFFRçFôÆö6ÆTFFU7G&ærv¦Ô¥rÇ·V#¢vçVÖW&2rÆÖöçF¢vÆöærrÆF¢vçVÖW&2rÇvVV¶F¢vÆöærwÒ° §6WDw&VWFær°¦F$÷VâçFVâ7æ2Óç°¢VçG&W3ÖvBF$ÆÂ°¢&VæFW"²æE°§Òæ6F6Óç²æE²Fö7BtD.XÞiÉþXÉn8*8:8;Âr²Ò° ¦gVæ7Föâ6WDw&VWFær°¢6öç7BÖæWrFFRævWD÷W'2°¢ÆWBsÒ~8>8)>8¾88òs°¢bÃRsÒ~ZIÎ8^8¾8~8^8)?	øÉs°¢VÇ6RbÃsÒ~8®8þ8(8n)ûòs°¢VÇ6RbÃrsÒ~8>8)>8¾88ÿ	øÊBs°¢VÇ6RbÃ#sÒ~8®8N8¾8(Î8^8ï	øÈrs°¢VÇ6RsÒ~8®8(N88þXÞ8¿	øÉs°¢Fö7VÖVçBævWDVÆVÖVçD'Bvw&VWEFWBrçFWD6öçFVçCÖs°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢:®YXð¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7FöâæE°¢ò¢i.i>[þ8¾Y8>8þ:®YXþ8).XJ®XX¢ð¢6öç7BÖæWrFFRævWD÷W'2°¢6öç7BööÃÕ2æfÇFW"Óç°¢bÃ&WGW&âæ6CÓÓÒ~K¸®iz^8î8>8wÇÇæ6CÓÓÒ~[ùÎh
-rs°¢bÃr&WGW&âæ6CÓÓÒ~yØh;2wÇÇæ6CÓÓÒ~Xh^yÈwÇÇæ6CÓÓÒ~K¸®iz^8î8>8s°¢&WGW&âG'VS°¢Ò°¢6öç7B6³×ööÅ´ÖFæfÆö÷"ÖFç&æFöÒ§ööÂæÆVæwFÓ°¢GÕ2ææFWöb6²°¢6÷u°§Ð¦gVæ7Föâ6÷u°¢6öç7BÕ5·GÓ°¢Fö7VÖVçBævWDVÆVÖVçD'BwFWBrçFWD6öçFVçC×ç°¢Fö7VÖVçBævWDVÆVÖVçD'Bw6rçFWD6öçFVçCÐ¢æ6CÓÓÒ~yØh;2sò	ù*s§æ6CÓÓÒ~Xh^yÈsò	úzs§æ6CÓÓÒ~¾YÞh	Þ2sò	øËòs§æ6CÓÓÒ~Y¹î[ê[ù~Y	sò	ùJrs§æ6CÓÓÒ~[ùÎh
-rsò	øÈ¢s¢	ù9Òr²rr·æ6C°¢Fö7VÖVçBævWDVÆVÖVçD'Bw6ræ6Æ74æÖSÒw×7G&VæwFÖ6r·æ6Ç3°§Ð¦gVæ7FöâæWE°¢GÒG³U2æÆVæwF²6÷u°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢8:8*N8;>Kú¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦7æ2gVæ7Föâ7V&ÖDÖâ°¢6öç7BFWCÖFö7VÖVçBævWDVÆVÖVçD'BvÖäçWBrçfÇVRçG&Ò°¢bFWBbbÖå÷FòbbÖäÖööB²Fö7B~KÙ^8¾8*Þ8:>88>888~8n8Þ)ÈÞûòr²&WGW&ã²Ð¢6öç7Bæ÷sÖæWrFFR°¢6öç7BÕ5·GÓ°¢ÆWBfæÅFWCÖÖäÖööCòÖäÖööB²rr·FWB§FWC°¢6öç7BVçG'ÖÖ´VçG'v6ÆVFRrÂfæÅFWBÂÖå÷FòÂæ÷r°¢VçG'çVW7Föã×ç°¢VçG'ç7G&VæwF×æ6C°¢vBW'67BVçG'°¢ò¢6ÆVF^ùNK¨²¢ð¢6öç7B&W3Õ$UÄU5·æ6E×ÇÅ$UÄU5²~K¸®iz^8î8>8uÓ°¢Fö7B&W5´ÖFæfÆö÷"ÖFç&æFöÒ§&W2æÆVæwFÒ°¢ò¢8:®8+¾88>88¢ð¢Fö7VÖVçBævWDVÆVÖVçD'BvÖäçWBrçfÇVSÒrs°¢Öå÷FóÖçVÆÃ²ÖäÖööCÒrs°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖå÷Fõw&ræ6Æ74Æ7Bç&VÖ÷fRw6÷rr°¢Fö7VÖVçBçVW'6VÆV7F÷$ÆÂræÖööBÖ÷Bræf÷$V6#Óæ"æ6Æ74Æ7Bç&VÖ÷fRw6VÆV7FVBr°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖööEG&ræ6Æ74Æ7Bç&VÖ÷fRw6÷rr°¢æWE°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢ûÞXª8*Þ8:>88>888:.8;Î888:°¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7Föâ÷Vä6F6ÖöFÂGR°¢6ÕGS×GS²6Õ÷FóÖçVÆÃ°¢6öç7B3ÕD5·GUÓ°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6Ô6öârçFWD6öçFVçCÖ2æ6öã°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6ÕFFÆRrçFWD6öçFVçCÖ2çC°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6Õ7V"rçFWD6öçFVçCÖ2ç3°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6ÔçWBrçfÇVSÒrs°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6Õ÷Fõw&ræ6Æ74Æ7Bç&VÖ÷fRw6÷rr°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6Õ÷Fô'Fârç7GÆRæF7ÆÒGSÓÓÒw÷FòsòvæöæRs¢v&Æö6²s°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6F6ÖöFÄ&rræ6Æ74Æ7BæFBv÷Vâr°¢bGSÓÓÒw÷FòrFö7VÖVçBævWDVÆVÖVçD'Bv6F6fÆTçWBræ6Æ6²°¢VÇ6R6WEFÖV÷WBÓæFö7VÖVçBævWDVÆVÖVçD'Bv6ÔçWBræfö7W2Ã3°§Ð¦gVæ7Föâ6Æ÷6T6F6ÖöFÂ²Fö7VÖVçBævWDVÆVÖVçD'Bv6F6ÖöFÄ&rræ6Æ74Æ7Bç&VÖ÷fRv÷Vâr²Ð¦7æ2gVæ7Föâ6fT6F6ÖöFÂ°¢6öç7BFWCÖFö7VÖVçBævWDVÆVÖVçD'Bv6ÔçWBrçfÇVRçG&Ò°¢bFWBbb6Õ÷Fò²Fö7B~KÙ^8¾8*Þ8:>88>888~8n)ÈÞûòr²&WGW&ã²Ð¢6öç7BVçG'ÖÖ´VçG'6ÕGRÇFWBÆ6Õ÷FòÆæWrFFR°¢vBW'67BVçG'°¢6Æ÷6T6F6ÖöFÂ°¢Fö7B~8*Þ8:>88>88ûÈ	úh²r°§Ð¦gVæ7FöâæFÆT6Õ÷FòR°¢6öç7BcÖRçF&vWBæfÆW5³Ó²bb&WGW&ã°¢&W6¦TÖrbÇW&ÃÓç°¢6Õ÷Fó×W&Ã°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6Õ÷FôÖrrç7&3×W&Ã°¢Fö7VÖVçBævWDVÆVÖVçD'Bv6Õ÷Fõw&ræ6Æ74Æ7BæFBw6÷rr°¢bFö7VÖVçBævWDVÆVÖVçD'Bv6F6ÖöFÄ&rræ6Æ74Æ7Bæ6öçFç2v÷Vâr÷Vä6F6ÖöFÂw÷Fòr°¢Ò²RçF&vWBçfÇVSÒrs°§Ð¦gVæ7Föâ&VÖ÷fT6Õ÷Fò²6Õ÷FóÖçVÆÃ²Fö7VÖVçBævWDVÆVÖVçD'Bv6Õ÷Fõw&ræ6Æ74Æ7Bç&VÖ÷fRw6÷rr²Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢k	~Xn8;¾XiyÉþûÈ8:8*N8;>yK¾Ú.ûÈ¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7FöâFövvÆTÖööEG&²Fö7VÖVçBævWDVÆVÖVçD'BvÖööEG&ræ6Æ74Æ7BçFövvÆRw6÷rr²Ð¦gVæ7Föâ6´ÖööBVÂÆVÖö¦°¢Fö7VÖVçBçVW'6VÆV7F÷$ÆÂræÖööBÖ÷Bræf÷$V6#Óæ"æ6Æ74Æ7Bç&VÖ÷fRw6VÆV7FVBr°¢VÂæ6Æ74Æ7BæFBw6VÆV7FVBr°¢ÖäÖööCÖVÖö¦°§Ð¦gVæ7FöâæFÆTÖå÷FòR°¢6öç7BcÖRçF&vWBæfÆW5³Ó²bb&WGW&ã°¢&W6¦TÖrbÇW&ÃÓç°¢Öå÷Fó×W&Ã°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖå÷FôÖrrç7&3×W&Ã°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖå÷Fõw&ræ6Æ74Æ7BæFBw6÷rr°¢Ò²RçF&vWBçfÇVSÒrs°§Ð¦gVæ7Föâ&VÖ÷fTÖå÷Fò²Öå÷FóÖçVÆÃ²Fö7VÖVçBævWDVÆVÖVçD'BvÖå÷Fõw&ræ6Æ74Æ7Bç&VÖ÷fRw6÷rr²Ð¦gVæ7Föâ&W6¦TÖrfÆRÆ6"°¢6öç7BÖsÖæWrÖvRÂSÕU$Âæ7&VFTö&¦V7EU$ÂfÆR°¢ÖræöæÆöCÒÓç°¢6öç7B3ÖFö7VÖVçBæ7&VFTVÆVÖVçBv6çf2rÂÖsÓÂ3ÖÖrçvGFæÖsöÖröÖrçvGF£°¢2çvGFÖÖrçvGF§3²2æVvCÖÖræVvB§3°¢2ævWD6öçFWBs&BræG&tÖvRÖrÃÃÆ2çvGFÆ2æVvB°¢6"2çFôFFU$ÂvÖvRö§VrrÃãsR°¢U$Âç&Wfö¶Tö&¦V7EU$ÂR°¢Ó²Örç7&3×S°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢û>Z;¨ÞÙ¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7FöâFövvÆUfö6R²5&V3÷7F÷b§7F'Eb²Ð¦gVæ7Föâ7F'Eb°¢6öç7B5#×væF÷rå7VV6&V6övæFöçÇÇvæF÷rçvV&¶E7VV6&V6övæFöã°¢b5"²Fö7B~û>Z;¨ÞÙ8¾Zûî[ùÎ8~8n8N8®8N89n8:8*n8+n8~8r²&WGW&ã²Ð¢&V6övæFöãÖæWr5"²&V6övæFöâæÆæsÒv¦Ô¥s°¢&V6övæFöâæ6öçFçV÷W3ÖfÇ6S²&V6övæFöâæçFW&Õ&W7VÇG3×G'VS°¢&V6övæFöâæöç7F'CÒÓç°¢5&V3×G'VS°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖ4'Fâræ6Æ74Æ7BæFBw&V6÷&Færr°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖ4'FârçFWD6öçFVçCÒ	ùKBs°¢Fö7VÖVçBævWDVÆVÖVçD'Bwfö6U7Bræ6Æ74Æ7BæFBw6÷rr°¢Ó°¢&V6övæFöâæöç&W7VÇCÖSÓç°¢ÆWBCÒrs°¢f÷"ÆWBÖRç&W7VÇDæFW¶ÆRç&W7VÇG2æÆVæwF¶²²B³ÖRç&W7VÇG5¶Õ³ÒçG&ç67&C°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖäçWBrçfÇVS×C°¢Ó°¢&V6övæFöâæöæVæCÒÓç7F÷b°¢&V6övæFöâæöæW'&÷#ÒÓç7F÷b°¢&V6övæFöâç7F'B°§Ð¦gVæ7Föâ7F÷b°¢b&V6övæFöâG'·&V6övæFöâç7F÷·Ö6F6R·Ð¢5&V3ÖfÇ6S°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖ4'Fâræ6Æ74Æ7Bç&VÖ÷fRw&V6÷&Færr°¢Fö7VÖVçBævWDVÆVÖVçD'BvÖ4'FârçFWD6öçFVçCÒ	øêBs°¢Fö7VÖVçBævWDVÆVÖVçD'Bwfö6U7Bræ6Æ74Æ7Bç&VÖ÷fRw6÷rr°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢88~8;Î8+þi8ÞKÙÀ¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7FöâÖ´VçG'GRÇFWBÇ÷FòÆæ÷r°¢&WGW&â°¢C¢FFRææ÷r´ÖFç&æFöÒÀ¢GRÂFWBÂ÷Fó¢÷F÷ÇÆçVÆÂÂÖööC¢ÖäÖööGÇÂrrÀ¢G3¢æ÷rævWEFÖRÀ¢FÖU7G#¢æ÷rçFôÆö6ÆUFÖU7G&ærv¦Ô¥rÇ¶÷W#¢s"ÖFvBrÆÖçWFS¢s"ÖFvBwÒÀ¢FFU7G#¢æ÷rçFôÆö6ÆTFFU7G&ærv¦Ô¥rÇ¶ÖöçF¢vÆöærrÆF¢vçVÖW&2rÇvVV¶F¢w6÷'BwÒÀ¢Ó°§Ð¦7æ2gVæ7FöâW'67BVçG'°¢G'²vBF$FBVçG'²Ö6F6R²6öç6öÆRæW'&÷"R²Ð¢VçG&W2çVç6gBVçG'°¢&VæFW"°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢8:Î8;>888:®8;>8+ ¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7Föâ&VæFW"°¢&VæFW%FöF²&VæFW$Æör²&VæFW%FÖVÆæR²&VæFW%&VfÆV7B²WFFU7G&V²°§Ð¦gVæ7Föâ&VæFW%FöF°¢6öç7BFöCÖæWrFFRçFôFFU7G&ær°¢6öç7BCÖVçG&W2æfÇFW"SÓææWrFFRRçG2çFôFFU7G&ærÓÓ×FöB°¢Fö7VÖVçBævWDVÆVÖVçD'BwFöF6÷VçBrçFWD6öçFVçC×BæÆVæwF°¢6öç7BVÃÖFö7VÖVçBævWDVÆVÖVçD'BwFöFVçG&W2r°¢bBæÆVæwF²VÂæææW$DÔÃÒsÆFb6Æ73Ò&V×G#ãÇîK¸®iz^8þ8î88*Þ8:>88>888®8~8#Æ'#îK®8þ8¾8(8¾zÙN88n8þ8(8o	úh³Â÷ãÂöFcâs²&WGW&ã²Ð¢VÂæææW$DÔÃ×BæÖSÓæ6&DDÔÂRæ¦öârr°§Ð¦gVæ7Föâ&VæFW%FÖVÆæR°¢6öç7BVÃÖFö7VÖVçBævWDVÆVÖVçD'BwFÖVÆæRr°¢bVçG&W2æÆVæwF²VÂæææW$DÔÃÒsÆFb6Æ73Ò&V×G#ãÆFb6Æ73Ò&V×GÖ6ò#ï	úh³ÂöFcãÇî8î8Ë.8Î8.8(®8î8¾8)>8#Æ'#îiÈXÞ8î8*Þ8:>88>888).8~8n8þ8(8nûÈÂ÷ãÂöFcâs²&WGW&ã²Ð¢ÆWBÒrrÆÆ7CÒrs°¢VçG&W2æf÷$V6SÓç°¢bRæFFU7G"ÓÖÆ7B²³ÖÆFb6Æ73Ò&FFRÖFfFW"#âG¶RæFFU7G'ÓÂöFcæ²Æ7CÖRæFFU7G#²Ð¢³Ö6&DDÔÂR°¢Ò°¢VÂæææW$DÔÃÖ°§Ð¦gVæ7Föâ6&DDÔÂR°¢6öç7B3ÕD5¶RçGU×ÇÅD2ævÆvC°¢6öç7BÖRç÷FóöÆÖr6Æ73Ò&VçG'×÷Fò"7&3Ò"G¶Rç÷F÷Ò"ÆöFæsÒ&Æ§#æ¢rs°¢6öç7BÆæSÖRçVW7FöãöÆFb7GÆSÒ&föçB×6¦S£'¶6öÆ÷#§f"Ò×7V"¶Ö&vâÖ&÷GFöÓ£7#å¢G¶W62RçVW7FöâÓÂöFcæ¢rs°¢6öç7BÖööD&FvSÒRçGSÓÓÒvÆörrbfRæÖööBöÇ7â7GÆSÒ&föçB×6¦S£g¶Ö&vâÖÆVgC£G#âG¶RæÖööGÓÂ÷7ãæ¢rs°¢&WGW&âÆFb6Æ73Ò&VçG'Ö6&B#à¢ÆFb6Æ73Ò&VçG'×F÷#à¢Ç7â6Æ73Ò&VçG'Ö6öâ#âG¶2æ6öçÓÂ÷7ãà¢Ç7â6Æ73Ò&VçG'×FrG¶2çFt6Ç7Ò#âG¶2çFtÇÓÂ÷7ãâG¶ÖööD&FvWÐ¢Ç7â6Æ73Ò&VçG'×FÖR#âG¶RçFÖU7G'ÓÂ÷7ãà¢ÂöFcà¢G·ÆæWÐ¢G¶RçFWCöÆFb6Æ73Ò&VçG'×FWB#âG¶W62RçFWBÓÂöFcæ¢rwÐ¢G·Ð¢ÂöFcæ°§Ð ¦gVæ7Föâ&VæFW%&VfÆV7B°¢ò¢K¸®8î{[¢ð¢6öç7Bæ÷sÖæWrFFRÂCÖæ÷rævWDFÂÖöãÖæWrFFRæ÷r°¢Ööâç6WDFFRæ÷rævWDFFRÒCÓÓÓóc¦BÓ²Ööâç6WD÷W'2ÃÃÃ°¢6öç7BvVV³ÖVçG&W2æfÇFW"SÓæRçG3ãÖÖöâævWEFÖR°¢Fö7VÖVçBævWDVÆVÖVçD'Bww3rçFWD6öçFVçC×vVV²æfÇFW"SÓæRçGSÓÓÒvvÆvBræÆVæwF°¢Fö7VÖVçBævWDVÆVÖVçD'Bww3rçFWD6öçFVçC×vVV²æfÇFW"SÓæRçGSÓÓÒvFVræÆVæwF°¢Fö7VÖVçBævWDVÆVÖVçD'Bww3"rçFWD6öçFVçC×vVV²æfÇFW"SÓæRçGSÓÓÒvfVVÆærræÆVæwF°¢Fö7VÖVçBævWDVÆVÖVçD'Bww32rçFWD6öçFVçC×vVV²æfÇFW"SÓæRçGSÓÓÒw÷FòræÆVæwF°¢Fö7VÖVçBævWDVÆVÖVçD'Bww3BrçFWD6öçFVçC×vVV²æfÇFW"SÓæRçGSÓÓÒvÆörræÆVæwF°¢Fö7VÖVçBævWDVÆVÖVçD'Bww4ÆÂrçFWD6öçFVçC×vVV²æÆVæwF° ¢ò¢k	~XnûÈi¹Îiz^8N88îiÈXÞ8îk	~XnûÈ¢ð¢6öç7BFæÖW3Õ²~iÈrÂ~x²rÂ~kBrÂ~iÊrÂ~yrÂ~YÉòrÂ~izRuÓ°¢ÆWBÖööDDÔÃÒrs°¢f÷"ÆWBÓ¶Ãs¶²²°¢6öç7BFCÖæWrFFRÖöâ²FBç6WDFFRÖöâævWDFFR¶°¢6öç7BFVçG&W3ÖVçG&W2æfÇFW"SÓç°¢6öç7BVCÖæWrFFRRçG2²&WGW&âVBçFôFFU7G&ærÓÓÖFBçFôFFU7G&ær°¢Ò°¢6öç7BÖööCÖFVçG&W2æfæBSÓæRæÖööBòæÖööBÇÂFVçG&W2æÆVæwFò	ù9Òs¢|+rr°¢6öç7B5FöFÖFBçFôFFU7G&ærÓÓÖæ÷rçFôFFU7G&ær°¢ÖööDDÔÂ³ÖÆFb6Æ73Ò&ÖööBÖF#à¢ÆFb6Æ73Ò&ÖööBÖFÖÆ&VÂ"7GÆSÒ"G¶5FöFòvföçB×vVvC£¶6öÆ÷#§f"ÒÖFVWs¢rwÒ#âG¶FæÖW5¶×ÓÂöFcà¢Ç7â6Æ73Ò&ÖööBÖFÖVÖö¦#âG¶ÖööGÓÂ÷7ãà¢ÂöFcæ°¢Ð¢Fö7VÖVçBævWDVÆVÖVçD'BvÖööEvVV²ræææW$DÔÃÖÖööDDÔÃ° ¢ò¢89.8;>88¢ð¢Fö7VÖVçBævWDVÆVÖVçD'Bw&VfÆV7DçBrçFWD6öçFVçCÐ¢$TdÄT5EôåE5´ÖFæfÆö÷"ÖFç&æFöÒ¥$TdÄT5EôåE2æÆVæwFÓ° ¢ò¢[Ë~8þ8:8:"¢ð¢Fö7VÖVçBævWDVÆVÖVçD'Bw7G&VæwFFWBrçFWD6öçFVçCÐ¢5E%õD5´ÖFæfÆö÷"ÖFç&æFöÒ¥5E%õD2æÆVæwFÓ°§Ð ¦gVæ7FöâWFFU7G&V²°¢6öç7BF3ÖæWr6WBVçG&W2æÖSÓææWrFFRRçG2çFôFFU7G&ærç6¦S°¢Fö7VÖVçBævWDVÆVÖVçD'Bw7G&V²rçFWD6öçFVçCÖ)ÊG¶F7ÞizV°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢8+þ89nX~8(®i»þ8¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7Föâ7vF6F"æÖRÆ'Fâ°¢Fö7VÖVçBçVW'6VÆV7F÷$ÆÂrçF"Ö6öçFVçBræf÷$V6CÓçBæ6Æ74Æ7Bç&VÖ÷fRv7FfRr°¢Fö7VÖVçBçVW'6VÆV7F÷$ÆÂrææbÖFVÒræf÷$V6ãÓæâæ6Æ74Æ7Bç&VÖ÷fRv7FfRr°¢Fö7VÖVçBævWDVÆVÖVçD'BwF"Òr¶æÖRæ6Æ74Æ7BæFBv7FfRr°¢'Fâæ6Æ74Æ7BæFBv7FfRr°¢bæÖSÓÓÒw&VfÆV7Br&VæFW%&VfÆV7B°¢bæÖSÓÓÒwFÖVÆæRr&VæFW%FÖVÆæR°¢væF÷rç67&öÆÅFòÃ°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢8*8*þ8+89Þ8;Î88¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7Föâ÷VäW÷'B²Fö7VÖVçBævWDVÆVÖVçD'BvW&rræ6Æ74Æ7BæFBv÷Vâr²Ð¦gVæ7Föâ6Æ÷6TW÷'B²Fö7VÖVçBævWDVÆVÖVçD'BvW&rræ6Æ74Æ7Bç&VÖ÷fRv÷Vâr²Ð¦gVæ7FöâFôW÷'D¥4ôâ°¢6öç7BCÔ¥4ôâç7G&ævgVçG&W2ÆçVÆÂÃ"°¢FÂæWr&Æö"¶EÒÇ·GS¢vÆ6Föâö§6öâwÒÂv6F6ÖF'Òr¶FFUFr²ræ§6öâr°¢6Æ÷6TW÷'B²Fö7Bt¥4ôîi»8ÞX{®8~ZèÎK¨nûÈr°§Ð¦gVæ7FöâFôW÷'EFWB°¢ÆWBCÒ	úh²8*Þ8:>88>88iz^Æîi»8ÞX{®8s¢r¶æWrFFRçFôÆö6ÆTFFU7G&ærv¦Ô¥r²uÆâr²~)Hrç&WVB#²uÆâs°¢ÆWBÆ7CÒrs°¢²ââæVçG&W5Òç&WfW'6Ræf÷$V6SÓç°¢bRæFFU7G"ÓÖÆ7B²B³ÒuÆï	ù8Rr¶RæFFU7G"²uÆâs²Æ7CÖRæFFU7G#²Ð¢6öç7B3ÕD5¶RçGU×ÇÅD2ævÆvC°¢B³Ö2æ6öâ²r²r¶RçFÖU7G"²uÒs°¢bRçVW7FöâB³Òu¢r¶RçVW7Föâ²r(i"s°¢bRçFWBB³ÖRçFWC²bRç÷FòB³Òr¾XiyÉõÒs²B³ÒuÆâs°¢Ò°¢FÂæWr&Æö"·EÒÇ·GS¢wFWB÷Æã¶6'6WC×WFbÓwÒÂv6F6ÖF'Òr¶FFUFr²rçGBr°¢6Æ÷6TW÷'B²Fö7B~88n8*Þ8+88i»8ÞX{®8~ZèÎK¨nûÈr°§Ð¦gVæ7FöâFÂ&Æö"ÆæÖR²6öç7BÖFö7VÖVçBæ7&VFTVÆVÖVçBvr²æ&VcÕU$Âæ7&VFTö&¦V7EU$Â&Æö"²æF÷væÆöCÖæÖS²æ6Æ6²²U$Âç&Wfö¶Tö&¦V7EU$Âæ&Vb²Ð¦gVæ7FöâFFUFr²&WGW&âæWrFFRçFô4õ7G&ærç6Æ6RÃ²Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢K¸®iz^8î8Þ8(Þ8ð¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦ÆWBÆötÖööCÒ	ù¢s°¦gVæ7FöâFövvÆTÆötÖööB²Fö7VÖVçBævWDVÆVÖVçD'BvÆötÖööE6¶W"ræ6Æ74Æ7BçFövvÆRw6÷rr²Ð¦gVæ7Föâ6´ÆötÖööBVÂÆVÖö¦°¢Fö7VÖVçBçVW'6VÆV7F÷$ÆÂræÆörÖÖööBÖ÷Bræf÷$V6#Óæ"æ6Æ74Æ7Bç&VÖ÷fRw6VÆV7FVBr°¢VÂæ6Æ74Æ7BæFBw6VÆV7FVBr°¢ÆötÖööCÖVÖö¦°¢Fö7VÖVçBævWDVÆVÖVçD'BvÆötÖööD'FârçFWD6öçFVçCÖVÖö¦°¢Fö7VÖVçBævWDVÆVÖVçD'BvÆötÖööD'Fâræ6Æ74Æ7BæFBv2ÖÖööBr°¢Fö7VÖVçBævWDVÆVÖVçD'BvÆötÖööE6¶W"ræ6Æ74Æ7Bç&VÖ÷fRw6÷rr°§Ð¦7æ2gVæ7FöâFDÆör°¢6öç7BçÖFö7VÖVçBævWDVÆVÖVçD'BvÆötçWBr°¢6öç7BFWCÖççfÇVRçG&Ò°¢bFWB²Fö7B~KÙ^8).8~8þûÉþi»8N8n8þ8n)ÈÞûòr²&WGW&ã²Ð¢6öç7Bæ÷sÖæWrFFR°¢6öç7BVçG'ÖÖ´VçG'vÆörrÇFWBÆçVÆÂÆæ÷r°¢VçG'æÖööCÖÆötÖööC°¢vBW'67BVçG'°¢ççfÇVSÒrs°¢Fö7B~Ë.8~8þûÈ	ù9Òr°§Ð¦gVæ7Föâ&VæFW$Æör°¢6öç7BFöCÖæWrFFRçFôFFU7G&ær°¢6öç7BÆöw3ÖVçG&W2æfÇFW"SÓæRçGSÓÓÒvÆörrbfæWrFFRRçG2çFôFFU7G&ærÓÓ×FöB°¢6öç7BVÃÖFö7VÖVçBævWDVÆVÖVçD'BvÆötÆ7Br°¢Fö7VÖVçBævWDVÆVÖVçD'BvÆöt6÷VçBrçFWD6öçFVçCÖÆöw2æÆVæwF²~K»bs°¢bÆöw2æÆVæwF°¢VÂæææW$DÔÃÒsÆFb6Æ73Ò&ÆörÖV×G#îK¸®iz^8þ8î8KÙ^8(.8®8~8.KÙ^8~8þûÉóÂöFcâs°¢&WGW&ã°¢Ð¢VÂæææW$DÔÃÖÆöw2æÖSÓà¢ÆFb6Æ73Ò&ÆörÖFVÒ#à¢Ç7â6Æ73Ò&ÆörÖFVÒ×FÖR#âG¶RçFÖU7G'ÓÂ÷7ãà¢Ç7â6Æ73Ò&ÆörÖFVÒÖÖööB#âG¶RæÖööGÇÂ	ù9ÒwÓÂ÷7ãà¢Ç7â6Æ73Ò&ÆörÖFVÒ×FWB#âG¶W62RçFWBÓÂ÷7ãà¢ÂöFcæ ¢æ¦öârr°§Ð ¢ò¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢8:n8;Î88n8*>8:®88n8*0¢)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y¢ð¦gVæ7FöâWFôw&÷rVÂ²VÂç7GÆRæVvCÒvWFòs²VÂç7GÆRæVvCÔÖFæÖâVÂç67&öÆÄVvBÃc²ws²Ð¦gVæ7FöâW62B²&WGW&âBç&WÆ6RòbörÂrf×²rç&WÆ6RóÂörÂrfÇC²rç&WÆ6RóâörÂrfwC²rç&WÆ6RõÆâörÂsÆ'#âr²Ð¦gVæ7FöâFö7BÒ²6öç7BCÖFö7VÖVçBævWDVÆVÖVçD'BwFö7Br²BçFWD6öçFVçCÖÓ²Bæ6Æ74Æ7BæFBw6÷rr²6WEFÖV÷WBÓçBæ6Æ74Æ7Bç&VÖ÷fRw6÷rrÃ##²Ð ¢ò¢6W'f6Rv÷&¶W.y¾Ë"¢ð¦bw6W'f6Uv÷&¶W"râæfvF÷"°¢æfvF÷"ç6W'f6Uv÷&¶W"ç&Vv7FW"r÷7ræ§2ræ6F6Óç·Ò°§Ð£Â÷67&Cà£Âö&öGà£ÂöFÖÃà
+        <div class="exp-ot">📝 テキストで保存</div>
+        <div class="exp-od">メモアプリに貼れる読みやすい形式。</div>
+      </button>
+    </div>
+    <button class="btn-close-exp" onclick="closeExport()">閉じる</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════
+   IndexedDB
+   ══════════════════════════ */
+const DB='CatchDiaryDB', VER=1, ST='entries';
+let db=null;
+function idbOpen(){
+  return new Promise((ok,ng)=>{
+    const r=indexedDB.open(DB,VER);
+    r.onupgradeneeded=e=>{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains(ST)){
+        const s=d.createObjectStore(ST,{keyPath:'id'});
+        s.createIndex('ts','ts',{unique:false});
+      }
+    };
+    r.onsuccess=e=>{db=e.target.result;ok(db)};
+    r.onerror=e=>ng(e.target.error);
+  });
+}
+function idbAdd(e){
+  return new Promise((ok,ng)=>{
+    const tx=db.transaction(ST,'readwrite');
+    tx.objectStore(ST).add(e); tx.oncomplete=ok; tx.onerror=e2=>ng(e2.target.error);
+  });
+}
+function idbAll(){
+  return new Promise((ok,ng)=>{
+    const r=db.transaction(ST,'readonly').objectStore(ST).index('ts').getAll();
+    r.onsuccess=e=>ok(e.target.result.reverse());
+    r.onerror=e=>ng(e.target.error);
+  });
+}
+
+/* ══════════════════════════
+   データ
+   ══════════════════════════ */
+let entries=[], qIdx=0, mainPhoto=null, mainMood='', cmPhoto=null, cmType='highlight';
+let recognition=null, isRec=false;
+
+const TC={
+  highlight:{icon:'🌟',t:'ハイライト',s:'今日あったこと（1行でOK）',tagCls:'tg-hl',tagL:'🌟 ハイライト'},
+  idea:     {icon:'💡',t:'アイデア',  s:'思いついたこと（断片でOK）',tagCls:'tg-id',tagL:'💡 アイデア'},
+  feeling:  {icon:'❤️',t:'きもち',  s:'絵文字だけでもOK',          tagCls:'tg-fl',tagL:'❤️ きもち'},
+  photo:    {icon:'📷',t:'写真',    s:'写真＋ひとこと',             tagCls:'tg-ph',tagL:'📷 写真'},
+  claude:   {icon:'🤖',t:'Claudeへの返事',s:'',                   tagCls:'tg-cl',tagL:'🤖 Claude'},
+  log:      {icon:'📝',t:'きろく',  s:'今日やったこと',             tagCls:'tg-log',tagL:'📝 きろく'},
+};
+
+/* ── 質問（naoさんの5つの強みに基づいて設計）── */
+const QS=[
+  /* 着想 (Ideation) */
+  {q:'今日、何か「あ！」ってひらめいたことはあった？',          cat:'着想',cls:'chip-ideation'},
+  {q:'最近、頭に浮かんだアイデアや「やってみたいこと」はある？', cat:'着想',cls:'chip-ideation'},
+  {q:'面白い組み合わせや、新しい発見はあった？小さくてもOK',    cat:'着想',cls:'chip-ideation'},
+  {q:'最近読んだ・見た・聞いたもので、心に残ったものは？',      cat:'着想',cls:'chip-ideation'},
+  {q:'「これとこれ、つながるかも？」って思ったことある？',      cat:'着想',cls:'chip-ideation'},
+  /* 内省 (Intellection) */
+  {q:'今、頭の中でぐるぐるしてることはある？言葉にならなくてもOK', cat:'内省',cls:'chip-intellect'},
+  {q:'最近、自分について「気づいたこと」はある？',                 cat:'内省',cls:'chip-intellect'},
+  {q:'今日、心がざわっとした瞬間はいつだった？',                   cat:'内省',cls:'chip-intellect'},
+  {q:'最近、じっくり考えていることは何？',                         cat:'内省',cls:'chip-intellect'},
+  /* 運命思考 (Connectedness) */
+  {q:'今日、誰かとつながれたなって感じた瞬間はあった？',           cat:'運命思考',cls:'chip-connect'},
+  {q:'最近、「不思議な縁だな」と思った出来事はある？',             cat:'運命思考',cls:'chip-connect'},
+  {q:'今日、誰かのことをふと思い出した？',                         cat:'運命思考',cls:'chip-connect'},
+  {q:'今日、感謝したいことはある？',                               cat:'運命思考',cls:'chip-connect'},
+  /* 回復志向 (Restorative) */
+  {q:'今日、何か「解決できた！」ことはあった？小さくてもOK',       cat:'回復志向',cls:'chip-restorative'},
+  {q:'「もっとこうしたいな」って思ったことはある？',               cat:'回復志向',cls:'chip-restorative'},
+  {q:'最近、自分の中で「良くなったな」と感じることは？',           cat:'回復志向',cls:'chip-restorative'},
+  /* 適応性 (Adaptability) */
+  {q:'今日、予想外だったことは何？',                               cat:'適応性',cls:'chip-adaptable'},
+  {q:'流れに身を任せてうまくいったことはあった？',                 cat:'適応性',cls:'chip-adaptable'},
+  {q:'今この瞬間、何を感じてる？',                                 cat:'適応性',cls:'chip-adaptable'},
+  /* 日常・感覚 */
+  {q:'今日のハイライトは何？ひとことでOK！',                       cat:'今日のこと',cls:'chip-daily'},
+  {q:'今の気分を色で例えると何色？',                               cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日食べたもので一番おいしかったのは？',                     cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日、笑った瞬間はあった？',                                 cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日の空、どんな空だった？',                                 cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日の気分を絵文字ひとつで表すと？',                         cat:'今日のこと',cls:'chip-daily'},
+];
+
+/* ── Claude返答（強み別） ── */
+const REPLIES={
+  '着想':      ['そのひらめき、大事にして！💡','着想の才能が動いてるね！✨','面白い！それ記録しといて'],
+  '内省':      ['深く考えられるの、naoさんの強みだよ','言葉にしてくれてありがとう💛','考え続けることに価値がある✨'],
+  '運命思考':  ['つながりを感じられるの素敵🌿','その縁、大事にして','人とのつながりが力になるね💛'],
+  '回復志向':  ['そういう気づき、回復志向の才能だよ💪','次に活かせばOK！','改善できるって思えること自体がすごい✨'],
+  '適応性':    ['今に集中できてる証拠だね✨','柔軟に動けるの、すごい才能！','流れに乗れてるね🌊'],
+  '今日のこと':['教えてくれてありがとう😊','いいね、ちゃんとキャッチできた🦋','その瞬間を記録できてよかった✨'],
+};
+
+/* ── 強みメモ ── */
+const STR_TIPS=[
+  '着想の才能：アイデアは出てくるけど、まとまらなくて当然。断片をキャッチしておけば、後から自然とつながってくる。',
+  '内省の才能：考えることが好きだから、言葉にしなくても「考えた」こと自体を記録するだけで価値がある。',
+  '運命思考の才能：人やモノのつながりに気づく力がある。日記の中にそのつながりが見えてくるはず。',
+  '回復志向の才能：「もっとよくしたい」が自然に出てくる。それは弱さじゃなく、最大の武器。',
+  '適応性の才能：計画通りじゃなくてもいい。その日の流れのまま記録すれば、それが一番自然なnaoさんの記録になる。',
+];
+
+/* ── ふりかえりヒント ── */
+const REFLECT_HINTS=[
+  '今週の記録を眺めてみて。同じテーマが繰り返し出てきたら、それが今のnaoさんにとって大切なことかも。',
+  '着想タイプのnaoさんは、断片的なアイデアをあとで見返すと新しいつながりが見えることが多い。',
+  'たくさん書けない日があっても、絵文字ひとつでも記録があれば十分。「記録がある」こと自体が大事。',
+  '回復志向の強みがあるから、振り返りで「次はこうしよう」が自然に出てくる。それをアイデアとしてキャッチして。',
+  '感覚的に感じたことを言葉にする必要はない。写真1枚、絵文字ひとつ、それも立派な記録。',
+];
+
+/* ══════════════════════════
+   起動
+   ══════════════════════════ */
+document.getElementById('hDate').textContent=
+  new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+setGreeting();
+idbOpen().then(async()=>{
+  entries=await idbAll();
+  render(); initQ();
+}).catch(()=>{ initQ(); toast('DB初期化エラー'); });
+
+function setGreeting(){
+  const h=new Date().getHours();
+  let g='こんにちは';
+  if(h<5) g='夜ふかしさん🌙';
+  else if(h<10) g='おはよう☀️';
+  else if(h<17) g='こんにちは🌤';
+  else if(h<21) g='おつかれさま🌇';
+  else g='おやすみ前に🌙';
+  document.getElementById('greetText').textContent=g;
+}
+
+/* ══════════════════════════
+   質問
+   ══════════════════════════ */
+function initQ(){
+  /* 時間帯に合った質問を優先 */
+  const h=new Date().getHours();
+  const pool=QS.filter(q=>{
+    if(h<10) return q.cat==='今日のこと'||q.cat==='適応性';
+    if(h<17) return q.cat==='着想'||q.cat==='内省'||q.cat==='今日のこと';
+    return true;
+  });
+  const pick=pool[Math.floor(Math.random()*pool.length)];
+  qIdx=QS.indexOf(pick);
+  showQ();
+}
+function showQ(){
+  const q=QS[qIdx];
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qChip').textContent=
+    (q.cat==='着想'?'💡':q.cat==='内省'?'🧠':q.cat==='運命思考'?'🌿':q.cat==='回復志向'?'🔧':q.cat==='適応性'?'🌊':'📝')+' '+q.cat;
+  document.getElementById('qChip').className='q-strength-chip '+q.cls;
+}
+function nextQ(){
+  qIdx=(qIdx+1)%QS.length; showQ();
+}
+
+/* ══════════════════════════
+   メイン送信
+   ══════════════════════════ */
+async function submitMain(){
+  const text=document.getElementById('mainInput').value.trim();
+  if(!text&&!mainPhoto&&!mainMood){ toast('何かキャッチしてね✍️'); return; }
+  const now=new Date();
+  const q=QS[qIdx];
+  let finalText=mainMood?(mainMood+' '+text):text;
+  const entry=mkEntry('claude', finalText, mainPhoto, now);
+  entry.question=q.q;
+  entry.strength=q.cat;
+  await persist(entry);
+  /* Claude返事 */
+  const reps=REPLIES[q.cat]||REPLIES['今日のこと'];
+  toast(reps[Math.floor(Math.random()*reps.length)]);
+  /* リセット */
+  document.getElementById('mainInput').value='';
+  mainPhoto=null; mainMood='';
+  document.getElementById('mainPhotoWrap').classList.remove('show');
+  document.querySelectorAll('.mood-opt').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('moodTray').classList.remove('show');
+  nextQ();
+}
+
+/* ══════════════════════════
+   追加キャッチモーダル
+   ══════════════════════════ */
+function openCatchModal(type){
+  cmType=type; cmPhoto=null;
+  const c=TC[type];
+  document.getElementById('cmIcon').textContent=c.icon;
+  document.getElementById('cmTitle').textContent=c.t;
+  document.getElementById('cmSub').textContent=c.s;
+  document.getElementById('cmInput').value='';
+  document.getElementById('cmPhotoWrap').classList.remove('show');
+  document.getElementById('cmPhotoBtn').style.display = type==='photo'?'none':'block';
+  document.getElementById('catchModalBg').classList.add('open');
+  if(type==='photo') document.getElementById('catchFileInput').click();
+  else setTimeout(()=>document.getElementById('cmInput').focus(),300);
+}
+function closeCatchModal(){ document.getElementById('catchModalBg').classList.remove('open'); }
+async function saveCatchModal(){
+  const text=document.getElementById('cmInput').value.trim();
+  if(!text&&!cmPhoto){ toast('何かキャッチして✍️'); return; }
+  const entry=mkEntry(cmType,text,cmPhoto,new Date());
+  await persist(entry);
+  closeCatchModal();
+  toast('キャッチ！🦋');
+}
+function handleCmPhoto(e){
+  const f=e.target.files[0]; if(!f) return;
+  resizeImg(f,url=>{
+    cmPhoto=url;
+    document.getElementById('cmPhotoImg').src=url;
+    document.getElementById('cmPhotoWrap').classList.add('show');
+    if(!document.getElementById('catchModalBg').classList.contains('open')) openCatchModal('photo');
+  }); e.target.value='';
+}
+function removeCmPhoto(){ cmPhoto=null; document.getElementById('cmPhotoWrap').classList.remove('show'); }
+
+/* ══════════════════════════
+   気分・写真（メイン画面）
+   ══════════════════════════ */
+function toggleMoodTray(){ document.getElementById('moodTray').classList.toggle('show'); }
+function pickMood(el,emoji){
+  document.querySelectorAll('.mood-opt').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  mainMood=emoji;
+}
+function handleMainPhoto(e){
+  const f=e.target.files[0]; if(!f) return;
+  resizeImg(f,url=>{
+    mainPhoto=url;
+    document.getElementById('mainPhotoImg').src=url;
+    document.getElementById('mainPhotoWrap').classList.add('show');
+  }); e.target.value='';
+}
+function removeMainPhoto(){ mainPhoto=null; document.getElementById('mainPhotoWrap').classList.remove('show'); }
+function resizeImg(file,cb){
+  const img=new Image(), u=URL.createObjectURL(file);
+  img.onload=()=>{
+    const c=document.createElement('canvas'), maxW=800, s=img.width>maxW?maxW/img.width:1;
+    c.width=img.width*s; c.height=img.height*s;
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    cb(c.toDataURL('image/jpeg',0.75));
+    URL.revokeObjectURL(u);
+  }; img.src=u;
+}
+
+/* ══════════════════════════
+   音声認識
+   ══════════════════════════ */
+function toggleVoice(){ isRec?stopV():startV(); }
+function startV(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ toast('音声認識に対応していないブラウザです'); return; }
+  recognition=new SR(); recognition.lang='ja-JP';
+  recognition.continuous=false; recognition.interimResults=true;
+  recognition.onstart=()=>{
+    isRec=true;
+    document.getElementById('micBtn').classList.add('recording');
+    document.getElementById('micBtn').textContent='🔴';
+    document.getElementById('voiceSt').classList.add('show');
+  };
+  recognition.onresult=e=>{
+    let t='';
+    for(let i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript;
+    document.getElementById('mainInput').value=t;
+  };
+  recognition.onend=()=>stopV();
+  recognition.onerror=()=>stopV();
+  recognition.start();
+}
+function stopV(){
+  if(recognition) try{recognition.stop();}catch(e){}
+  isRec=false;
+  document.getElementById('micBtn').classList.remove('recording');
+  document.getElementById('micBtn').textContent='🎤';
+  document.getElementById('voiceSt').classList.remove('show');
+}
+
+/* ══════════════════════════
+   データ操作
+   ══════════════════════════ */
+function mkEntry(type,text,photo,now){
+  return {
+    id: Date.now()+Math.random(),
+    type, text, photo: photo||null, mood: mainMood||'',
+    ts: now.getTime(),
+    timeStr: now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
+    dateStr: now.toLocaleDateString('ja-JP',{month:'long',day:'numeric',weekday:'short'}),
+  };
+}
+async function persist(entry){
+  try{ await idbAdd(entry); }catch(e){ console.error(e); }
+  entries.unshift(entry);
+  render();
+}
+
+/* ══════════════════════════
+   レンダリング
+   ══════════════════════════ */
+function render(){
+  renderToday(); renderLog(); renderTimeline(); renderReflect(); updateStreak();
+}
+function renderToday(){
+  const tod=new Date().toDateString();
+  const t=entries.filter(e=>new Date(e.ts).toDateString()===tod);
+  document.getElementById('todayCount').textContent=t.length;
+  const el=document.getElementById('todayEntries');
+  if(!t.length){ el.innerHTML='<div class="empty"><p>今日はまだキャッチなし。<br>上の質問に答えてみよう🦋</p></div>'; return; }
+  el.innerHTML=t.map(e=>cardHTML(e)).join('');
+}
+function renderTimeline(){
+  const el=document.getElementById('timeline');
+  if(!entries.length){ el.innerHTML='<div class="empty"><div class="empty-ico">🦋</div><p>まだ記録がありません。<br>最初のキャッチをしてみよう！</p></div>'; return; }
+  let h='',last='';
+  entries.forEach(e=>{
+    if(e.dateStr!==last){ h+=`<div class="date-divider">${e.dateStr}</div>`; last=e.dateStr; }
+    h+=cardHTML(e);
+  });
+  el.innerHTML=h;
+}
+function cardHTML(e){
+  const c=TC[e.type]||TC.highlight;
+  const ph=e.photo?`<img class="entry-photo" src="${e.photo}" loading="lazy">`:'';
+  const qLine=e.question?`<div style="font-size:12px;color:var(--sub);margin-bottom:3px">Q: ${esc(e.question)}</div>`:'';
+  const moodBadge=(e.type==='log'&&e.mood)?`<span style="font-size:16px;margin-left:4px">${e.mood}</span>`:'';
+  return `<div class="entry-card">
+    <div class="entry-top">
+      <span class="entry-icon">${c.icon}</span>
+      <span class="entry-tag ${c.tagCls}">${c.tagL}</span>${moodBadge}
+      <span class="entry-time">${e.timeStr}</span>
+    </div>
+    ${qLine}
+    ${e.text?`<div class="entry-text">${esc(e.text)}</div>`:''}
+    ${ph}
+  </div>`;
+}
+
+function renderReflect(){
+  /* 今週の統計 */
+  const now=new Date(), d=now.getDay(), mon=new Date(now);
+  mon.setDate(now.getDate()-(d===0?6:d-1)); mon.setHours(0,0,0,0);
+  const week=entries.filter(e=>e.ts>=mon.getTime());
+  document.getElementById('ws0').textContent=week.filter(e=>e.type==='highlight').length;
+  document.getElementById('ws1').textContent=week.filter(e=>e.type==='idea').length;
+  document.getElementById('ws2').textContent=week.filter(e=>e.type==='feeling').length;
+  document.getElementById('ws3').textContent=week.filter(e=>e.type==='photo').length;
+  document.getElementById('ws4').textContent=week.filter(e=>e.type==='log').length;
+  document.getElementById('wsAll').textContent=week.length;
+
+  /* 気分（曜日ごとの最初の気分） */
+  const dayNames=['月','火','水','木','金','土','日'];
+  let moodHTML='';
+  for(let i=0;i<7;i++){
+    const dd=new Date(mon); dd.setDate(mon.getDate()+i);
+    const dayEntries=entries.filter(e=>{
+      const ed=new Date(e.ts); return ed.toDateString()===dd.toDateString();
+    });
+    const mood=dayEntries.find(e=>e.mood)?.mood || (dayEntries.length?'📝':'·');
+    const isToday=dd.toDateString()===now.toDateString();
+    moodHTML+=`<div class="mood-day">
+      <div class="mood-day-label" style="${isToday?'font-weight:800;color:var(--deep)':''}">${dayNames[i]}</div>
+      <span class="mood-day-emoji">${mood}</span>
+    </div>`;
+  }
+  document.getElementById('moodWeek').innerHTML=moodHTML;
+
+  /* ヒント */
+  document.getElementById('reflectHint').textContent=
+    REFLECT_HINTS[Math.floor(Math.random()*REFLECT_HINTS.length)];
+
+  /* 強みメモ */
+  document.getElementById('strengthText').textContent=
+    STR_TIPS[Math.floor(Math.random()*STR_TIPS.length)];
+}
+
+function updateStreak(){
+  const days=new Set(entries.map(e=>new Date(e.ts).toDateString())).size;
+  document.getElementById('streak').textContent=`✨ ${days}日`;
+}
+
+/* ══════════════════════════
+   タブ切り替え
+   ══════════════════════════ */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='reflect') renderReflect();
+  if(name==='timeline') renderTimeline();
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════
+   エクスポート
+   ══════════════════════════ */
+function openExport(){ document.getElementById('expBg').classList.add('open'); }
+function closeExport(){ document.getElementById('expBg').classList.remove('open'); }
+function doExportJSON(){
+  const d=JSON.stringify(entries,null,2);
+  dl(new Blob([d],{type:'application/json'}),'catch-diary-'+dateTag()+'.json');
+  closeExport(); toast('JSON書き出し完了！');
+}
+function doExportText(){
+  let t='🦋 キャッチ日記\n書き出し: '+new Date().toLocaleDateString('ja-JP')+'\n'+'─'.repeat(28)+'\n';
+  let last='';
+  [...entries].reverse().forEach(e=>{
+    if(e.dateStr!==last){ t+='\n📅 '+e.dateStr+'\n'; last=e.dateStr; }
+    const c=TC[e.type]||TC.highlight;
+    t+=c.icon+' ['+e.timeStr+'] ';
+    if(e.question) t+='Q:'+e.question+' → ';
+    if(e.text) t+=e.text; if(e.photo) t+=' [写真]'; t+='\n';
+  });
+  dl(new Blob([t],{type:'text/plain;charset=utf-8'}),'catch-diary-'+dateTag()+'.txt');
+  closeExport(); toast('テキスト書き出し完了！');
+}
+function dl(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
+function dateTag(){ return new Date().toISOString().slice(0,10); }
+
+/* ══════════════════════════
+   今日のきろく
+   ══════════════════════════ */
+let logMood='😊';
+function toggleLogMood(){ document.getElementById('logMoodPicker').classList.toggle('show'); }
+function pickLogMood(el,emoji){
+  document.querySelectorAll('.log-mood-opt').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  logMood=emoji;
+  document.getElementById('logMoodBtn').textContent=emoji;
+  document.getElementById('logMoodBtn').classList.add('has-mood');
+  document.getElementById('logMoodPicker').classList.remove('show');
+}
+async function addLog(){
+  const inp=document.getElementById('logInput');
+  const text=inp.value.trim();
+  if(!text){ toast('何をした？書いてみて✍️'); return; }
+  const now=new Date();
+  const entry=mkEntry('log',text,null,now);
+  entry.mood=logMood;
+  await persist(entry);
+  inp.value='';
+  toast('記録した！📝');
+}
+function renderLog(){
+  const tod=new Date().toDateString();
+  const logs=entries.filter(e=>e.type==='log'&&new Date(e.ts).toDateString()===tod);
+  const el=document.getElementById('logList');
+  document.getElementById('logCount').textContent=logs.length+'件';
+  if(!logs.length){
+    el.innerHTML='<div class="log-empty">今日はまだ何もなし。何した？</div>';
+    return;
+  }
+  el.innerHTML=logs.map(e=>
+    `<div class="log-item">
+      <span class="log-item-time">${e.timeStr}</span>
+      <span class="log-item-mood">${e.mood||'📝'}</span>
+      <span class="log-item-text">${esc(e.text)}</span>
+    </div>`
+  ).join('');
+}
+
+/* ══════════════════════════
+   ユーティリティ
+   ══════════════════════════ */
+function autoGrow(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,160)+'px'; }
+function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* Service Worker登録 */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
