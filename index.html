@@ -254,7 +254,11 @@
     .log-item:last-child { border-bottom: none; }
     .log-item-time { font-size: 11px; color: #c4b4ac; flex-shrink: 0; margin-top: 2px; min-width: 40px; }
     .log-item-mood { font-size: 16px; flex-shrink: 0; }
-    .log-item-text { font-size: 14px; line-height: 1.55; flex: 1; word-break: break-all; }
+    .log-item-text { font-size: 14px; line-height: 1.55; flex: 1; word-break: break-all; cursor: pointer; }
+    .log-item-text:hover { color: var(--deep); }
+    .log-item-del { background: none; border: none; color: #c4b4ac; cursor: pointer; font-size: 14px; padding: 2px 4px; flex-shrink: 0; line-height: 1; }
+    .log-item-del:hover { color: #e84040; }
+    .log-item-edit-input { font-size: 14px; flex: 1; background: white; border: 1.5px solid var(--warm); border-radius: 8px; padding: 2px 8px; font-family: inherit; color: var(--txt); outline: none; }
     .log-empty { font-size: 13px; color: #c4b4ac; text-align: center; padding: 12px 0; }
     .log-hint { font-size: 11px; color: #c4b4ac; margin-top: 6px; text-align: center; }
 
@@ -657,6 +661,18 @@ function idbAll(){
     r.onerror=e=>ng(e.target.error);
   });
 }
+function idbDelete(id){
+  return new Promise((ok,ng)=>{
+    const tx=db.transaction(ST,'readwrite');
+    tx.objectStore(ST).delete(id); tx.oncomplete=ok; tx.onerror=e=>ng(e.target.error);
+  });
+}
+function idbUpdate(entry){
+  return new Promise((ok,ng)=>{
+    const tx=db.transaction(ST,'readwrite');
+    tx.objectStore(ST).put(entry); tx.oncomplete=ok; tx.onerror=e=>ng(e.target.error);
+  });
+}
 
 /* ══════════════════════════
    データ
@@ -924,6 +940,35 @@ async function persist(entry){
   entries.unshift(entry);
   render();
 }
+async function deleteLog(id){
+  entries=entries.filter(e=>e.id!==id);
+  try{ await idbDelete(id); }catch(e){ console.error(e); }
+  renderLog();
+  toast('削除しました🗑️');
+}
+function editLogInline(span,id){
+  const entry=entries.find(e=>e.id===id);
+  if(!entry) return;
+  const inp=document.createElement('input');
+  inp.className='log-item-edit-input';
+  inp.value=entry.text;
+  span.replaceWith(inp);
+  inp.focus(); inp.select();
+  const save=async()=>{
+    const newText=inp.value.trim();
+    if(newText && newText!==entry.text){
+      entry.text=newText;
+      try{ await idbUpdate(entry); }catch(e){ console.error(e); }
+      toast('修正した！✏️');
+    }
+    renderLog();
+  };
+  inp.addEventListener('blur',save);
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && !e.isComposing){ e.preventDefault(); inp.blur(); }
+    if(e.key==='Escape'){ inp.removeEventListener('blur',save); renderLog(); }
+  });
+}
 
 /* ══════════════════════════
    レンダリング
@@ -1082,10 +1127,11 @@ function renderLog(){
     return;
   }
   el.innerHTML=logs.map(e=>
-    `<div class="log-item">
+    `<div class="log-item" data-id="${e.id}">
       <span class="log-item-time">${e.timeStr}</span>
       <span class="log-item-mood">${e.mood||'📝'}</span>
-      <span class="log-item-text">${esc(e.text)}</span>
+      <span class="log-item-text" onclick="editLogInline(this,${e.id})" title="タップして編集">${esc(e.text)}</span>
+      <button class="log-item-del" onclick="deleteLog(${e.id})" title="削除">✕</button>
     </div>`
   ).join('');
 }
