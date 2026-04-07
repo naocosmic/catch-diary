@@ -298,6 +298,16 @@
        TAB 3 : ふりかえり
        ══════════════════════════════ */
     .reflect-section { margin-top: 16px; }
+    .copy-claude-btn {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--warm), var(--deep));
+      color: white; border: none; border-radius: 18px;
+      font-size: 15px; font-weight: 800; cursor: pointer;
+      margin-top: 16px; margin-bottom: 4px;
+      box-shadow: 0 3px 14px rgba(232,103,58,0.35);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .copy-claude-btn:active { transform: scale(0.97); }
     .reflect-card {
       background: white; border-radius: 18px; padding: 16px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 14px;
@@ -355,6 +365,47 @@
       width:100%; background:#ede3dc; border:none; border-radius:14px;
       padding:12px; font-size:14px; font-weight:700; color:var(--sub); cursor:pointer;
     }
+
+    /* ─── 過去の記録モーダル ─── */
+    .past-modal-bg {
+      display:none; position:fixed; inset:0;
+      background:rgba(40,28,22,0.5); z-index:200;
+      align-items:flex-end; justify-content:center;
+    }
+    .past-modal-bg.open { display:flex; }
+    .past-modal {
+      background:#fffaf6; border-radius:26px 26px 0 0;
+      width:100%; max-width:430px; padding:22px 18px calc(30px + var(--safe-bottom));
+    }
+    .past-modal-title { font-size:16px; font-weight:800; margin-bottom:16px; }
+    .past-date-row { display:flex; gap:8px; margin-bottom:14px; }
+    .past-date-input, .past-time-input {
+      border:1.5px solid var(--border); border-radius:12px;
+      padding:10px 12px; font-size:14px; font-family:inherit;
+      background:white; color:var(--txt); outline:none;
+    }
+    .past-date-input { flex:2; }
+    .past-time-input { flex:1; }
+    .past-type-row { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+    .past-type-btn {
+      background:var(--bg); border:1.5px solid var(--border); border-radius:20px;
+      padding:6px 12px; font-size:13px; cursor:pointer; font-weight:600; color:var(--sub);
+    }
+    .past-type-btn.sel { border-color:var(--deep); color:var(--deep); background:#fff3ed; }
+    .past-textarea {
+      width:100%; background:var(--bg); border:none; border-radius:16px;
+      padding:13px 16px; font-size:15px; font-family:inherit;
+      color:var(--txt); resize:none; outline:none; line-height:1.55;
+      min-height:80px; margin-bottom:12px; box-sizing:border-box;
+    }
+    .past-textarea:focus { background:white; box-shadow:0 0 0 2px rgba(249,168,106,0.4); }
+    .past-add-btn {
+      display:flex; align-items:center; gap:6px; justify-content:center;
+      width:100%; padding:11px; margin-bottom:14px;
+      background:white; border:1.5px dashed var(--border); border-radius:16px;
+      color:var(--sub); font-size:13px; font-weight:700; cursor:pointer;
+    }
+    .past-add-btn:hover { border-color:var(--warm); color:var(--deep); }
 
     /* ─── 追加キャッチモーダル ─── */
     .catch-modal-bg {
@@ -540,12 +591,18 @@
 
 <!-- ═══ TAB 2 : タイムライン ═══ -->
 <div class="tab-content" id="tab-timeline">
-  <div style="margin-top:14px;" id="timeline"></div>
+  <button class="past-add-btn" onclick="openPastModal()" style="margin-top:14px;">
+    <span>📅</span><span>過去の日の記録を追加する</span>
+  </button>
+  <div id="timeline"></div>
 </div>
 
 <!-- ═══ TAB 3 : ふりかえり ═══ -->
 <div class="tab-content" id="tab-reflect">
   <div class="reflect-section">
+    <button class="copy-claude-btn" onclick="copyToday()">
+      <span>📋</span><span>今日の記録をクロードに投げる</span>
+    </button>
     <div class="reflect-card">
       <div class="reflect-title">📊 今週のキャッチ</div>
       <div class="stat-row" id="weekStats">
@@ -583,6 +640,28 @@
   <button class="nav-item" onclick="switchTab('reflect',this)">
     <span class="nav-icon">🔮</span><span class="nav-label">ふりかえり</span>
   </button>
+</div>
+
+<!-- ═══ 過去の記録モーダル ═══ -->
+<div class="past-modal-bg" id="pastModalBg" onclick="if(event.target.id==='pastModalBg')closePastModal()">
+  <div class="past-modal">
+    <div class="past-modal-title">📅 過去の記録を追加</div>
+    <div class="past-date-row">
+      <input class="past-date-input" type="date" id="pastDate">
+      <input class="past-time-input" type="time" id="pastTime">
+    </div>
+    <div class="past-type-row" id="pastTypeRow">
+      <button class="past-type-btn sel" onclick="selectPastType(this,'log')">📝 きろく</button>
+      <button class="past-type-btn" onclick="selectPastType(this,'highlight')">🌟 ハイライト</button>
+      <button class="past-type-btn" onclick="selectPastType(this,'idea')">💡 アイデア</button>
+      <button class="past-type-btn" onclick="selectPastType(this,'feeling')">❤️ きもち</button>
+    </div>
+    <textarea class="past-textarea" id="pastText" placeholder="何があった？何を思った？"></textarea>
+    <div class="cm-actions">
+      <button class="cm-cancel" onclick="closePastModal()">やめる</button>
+      <button class="cm-save" onclick="savePastEntry()">追加する 📝</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ 追加キャッチモーダル ═══ -->
@@ -843,6 +922,37 @@ function openCatchModal(type){
   else setTimeout(()=>document.getElementById('cmInput').focus(),300);
 }
 function closeCatchModal(){ document.getElementById('catchModalBg').classList.remove('open'); }
+
+/* ── 過去の記録 ── */
+let pastType='log';
+function openPastModal(){
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('pastDate').value=today;
+  document.getElementById('pastTime').value='12:00';
+  document.getElementById('pastText').value='';
+  pastType='log';
+  document.querySelectorAll('.past-type-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.past-type-btn')[0].classList.add('sel');
+  document.getElementById('pastModalBg').classList.add('open');
+  setTimeout(()=>document.getElementById('pastText').focus(),300);
+}
+function closePastModal(){ document.getElementById('pastModalBg').classList.remove('open'); }
+function selectPastType(btn,type){
+  document.querySelectorAll('.past-type-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); pastType=type;
+}
+async function savePastEntry(){
+  const text=document.getElementById('pastText').value.trim();
+  if(!text){ toast('何か書いてみて✍️'); return; }
+  const dateVal=document.getElementById('pastDate').value;
+  const timeVal=document.getElementById('pastTime').value||'12:00';
+  if(!dateVal){ toast('日付を選んでね📅'); return; }
+  const dt=new Date(`${dateVal}T${timeVal}`);
+  const entry=mkEntry(pastType,text,null,dt);
+  await persist(entry);
+  closePastModal();
+  toast('過去の記録を追加した！📝');
+}
 async function saveCatchModal(){
   const text=document.getElementById('cmInput').value.trim();
   if(!text&&!cmPhoto){ toast('何かキャッチして✍️'); return; }
@@ -975,6 +1085,38 @@ function editLogInline(span,id){
    ══════════════════════════ */
 function render(){
   renderToday(); renderLog(); renderTimeline(); renderReflect(); updateStreak();
+}
+function copyToday(){
+  const today=new Date();
+  const tod=today.toDateString();
+  const todayEntries=entries.filter(e=>new Date(e.ts).toDateString()===tod)
+    .slice().reverse();
+  if(!todayEntries.length){ toast('今日のキャッチがまだないよ！🦋'); return; }
+  const dow=['日','月','火','水','木','金','土'][today.getDay()];
+  const d=today.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+  const typeIcon={highlight:'🌟',idea:'💡',feeling:'❤️',photo:'📷',claude:'🤖',log:'📝'};
+  let lines=[`【キャッチ日記 ${d}（${dow}）】\n`];
+  todayEntries.forEach(e=>{
+    const icon=typeIcon[e.type]||'📌';
+    const mood=(e.mood&&e.mood!=='😊')?e.mood+' ':'';
+    if(e.type==='log'){
+      lines.push(`${icon} ${e.timeStr}  ${mood}${e.text}`);
+    } else {
+      lines.push(`${icon} ${mood}${e.text}`);
+    }
+  });
+  lines.push('\n---');
+  lines.push('↑これが今日のキャッチです。まとめ・気づき・ひとことをください！');
+  const txt=lines.join('\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    toast('コピーした！クロードのチャットに貼り付けてね📋');
+  }).catch(()=>{
+    const el=document.createElement('textarea');
+    el.value=txt; document.body.appendChild(el);
+    el.select(); document.execCommand('copy');
+    document.body.removeChild(el);
+    toast('コピーした！クロードのチャットに貼り付けてね📋');
+  });
 }
 function renderToday(){
   const tod=new Date().toDateString();
