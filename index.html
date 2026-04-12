@@ -532,7 +532,7 @@
       <div class="extras-row">
         <button class="mood-btn" onclick="toggleMoodTray()">😊 きもち</button>
         <button class="photo-btn-small" onclick="document.getElementById('mainFileInput').click()">📷 写真</button>
-        <input type="file" id="mainFileInput" accept="image/*" capture="environment" onchange="handleMainPhoto(event)">
+        <input type="file" id="mainFileInput" accept="image/*"  onchange="handleMainPhoto(event)">
         <button class="send-btn" onclick="submitMain()">キャッチ！🦋</button>
       </div>
     </div>
@@ -681,7 +681,7 @@
     </div>
     <textarea class="cm-textarea" id="cmInput" rows="3" placeholder="ここに書いてね…"></textarea>
     <button class="cm-photo-btn" id="cmPhotoBtn" onclick="document.getElementById('catchFileInput').click()">📷 写真を添付する</button>
-    <input type="file" id="catchFileInput" accept="image/*" capture="environment" onchange="handleCmPhoto(event)">
+    <input type="file" id="catchFileInput" accept="image/*"  onchange="handleCmPhoto(event)">
     <div class="cm-actions">
       <button class="cm-cancel" onclick="closeCatchModal()">やめる</button>
       <button class="cm-save" onclick="saveCatchModal()">キャッチ！🦋</button>
