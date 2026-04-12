@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="キャッチ日記">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#e8673a">
+  <meta name="color-scheme" content="light">
+  <title>キャッチ日記 🦋</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --warm: #f9a86a; --deep: #e8673a; --bg: #fdf6ee; --card: #ffffff;
+      --txt: #3a2e28; --sub: #9b8a7e; --border: #f0e4dc;
+      --yellow: #f9c74f; --blue: #7ecfe0; --pink: #f4a2b8; --green: #a8d8a0;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    input, textarea, select { color: var(--txt); -webkit-text-fill-color: var(--txt); color-scheme: light; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg); color: var(--txt);
+      max-width: 430px; margin: 0 auto;
+      min-height: 100vh; min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* ─── 共通ユーティリティ ─── */
+    .hidden { display: none !important; }
+
+    /* ─── ヘッダー ─── */
+    .header {
+      background: linear-gradient(135deg, var(--warm) 0%, var(--deep) 100%);
+      padding: 16px 18px 13px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 14px rgba(232,103,58,0.35);
+    }
+    .header-title { font-size: 18px; font-weight: 800; color: white; }
+    .header-date  { font-size: 11px; color: rgba(255,255,255,0.78); margin-top: 1px; }
+    .header-right { display: flex; align-items: center; gap: 6px; }
+    .hdr-btn {
+      background: rgba(255,255,255,0.18); border: none; border-radius: 50%;
+      width: 32px; height: 32px; color: white; font-size: 14px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .streak-badge {
+      background: rgba(255,255,255,0.22); border-radius: 20px;
+      padding: 4px 11px; color: white; font-size: 12px; font-weight: 700;
+    }
+
+    /* ─── タブコンテンツ ─── */
+    .tab-content { display: none; padding: 0 16px 100px; }
+    .tab-content.active { display: block; }
+
+    /* ─── ボトムナビ ─── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 430px;
+      background: white; border-top: 1px solid var(--border);
+      display: flex; padding: 6px 0 calc(8px + var(--safe-bottom));
+      z-index: 100;
+    }
+    .nav-item {
+      flex: 1; text-align: center; background: none; border: none;
+      cursor: pointer; padding: 6px 0;
+    }
+    .nav-item .nav-icon { font-size: 22px; display: block; }
+    .nav-item .nav-label { font-size: 10px; font-weight: 700; color: var(--sub); margin-top: 2px; }
+    .nav-item.active .nav-label { color: var(--deep); }
+
+    /* ══════════════════════════════
+       TAB 1 : キャッチ（メイン画面）
+       ══════════════════════════════ */
+    .greeting {
+      margin-top: 20px; font-size: 13px; color: var(--sub); font-weight: 600;
+    }
+    .greeting-name {
+      font-size: 22px; font-weight: 800; color: var(--txt); margin-top: 2px;
+    }
+
+    /* Claude質問カード */
+    .q-card {
+      margin-top: 16px; background: white;
+      border-radius: 22px; padding: 18px 18px 16px;
+      box-shadow: 0 3px 16px rgba(0,0,0,0.07); position: relative;
+    }
+    .q-strength-chip {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      border-radius: 20px; padding: 3px 10px; margin-bottom: 10px;
+    }
+    .chip-ideation    { background: #e0f5fb; color: #007ea0; }
+    .chip-intellect   { background: #f0e8fb; color: #6b4ea0; }
+    .chip-connect     { background: #e8f7e6; color: #3a8a36; }
+    .chip-restorative { background: #fff3e0; color: #c07a00; }
+    .chip-adaptable   { background: #fff0f5; color: #c0486a; }
+    .chip-daily       { background: #f5ede6; color: #7a6058; }
+    .q-text {
+      font-size: 18px; font-weight: 700; line-height: 1.55; color: var(--txt);
+    }
+    .q-refresh {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--bg); border: none; border-radius: 50%;
+      width: 30px; height: 30px; cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--sub);
+    }
+
+    /* 回答エリア */
+    .answer-area { margin-top: 14px; }
+    .answer-row { display: flex; gap: 8px; align-items: flex-end; }
+    .answer-input {
+      flex: 1; background: var(--bg); border: none; border-radius: 16px;
+      padding: 13px 16px; font-size: 15px; font-family: inherit;
+      color: var(--txt); resize: none; outline: none; line-height: 1.55;
+      min-height: 52px; max-height: 160px;
+    }
+    .answer-input:focus { background: white; box-shadow: 0 0 0 2px rgba(249,168,106,0.4); }
+    .answer-input::placeholder { color: #cdbdb5; }
+    .mic-btn {
+      width: 48px; height: 48px; border-radius: 50%; border: none;
+      background: var(--deep); color: white; cursor: pointer; font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: 0 3px 10px rgba(232,103,58,0.4);
+    }
+    .mic-btn.recording {
+      background: #e84040; animation: pulse 1s infinite;
+      box-shadow: 0 0 0 6px rgba(232,64,64,0.18);
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+    .voice-status {
+      display: none; font-size: 12px; color: #e84040;
+      text-align: center; margin-top: 6px; font-weight: 600;
+    }
+    .voice-status.show { display: block; }
+
+    /* 気分・写真・送信 */
+    .extras-row {
+      display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+    }
+    .mood-btn, .photo-btn-small {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 7px 12px; cursor: pointer; font-size: 13px; font-weight: 600;
+      color: var(--sub);
+    }
+    .mood-btn:hover, .photo-btn-small:hover { border-color: var(--warm); }
+    .send-btn {
+      margin-left: auto;
+      background: linear-gradient(135deg, var(--warm), var(--deep)); border: none;
+      border-radius: 14px; padding: 10px 22px;
+      font-size: 14px; font-weight: 800; color: white; cursor: pointer;
+      box-shadow: 0 3px 12px rgba(232,103,58,0.35);
+    }
+    .send-btn:active { transform: scale(0.96); }
+    #mainFileInput { display: none; }
+
+    /* 気持ちピッカー（メイン画面用） */
+    .mood-tray {
+      display: none; flex-wrap: wrap; gap: 6px;
+      margin-top: 8px; padding: 8px;
+      background: white; border-radius: 14px; border: 1.5px solid var(--border);
+    }
+    .mood-tray.show { display: flex; }
+    .mood-opt {
+      background: var(--bg); border: 2px solid transparent; border-radius: 10px;
+      padding: 6px 9px; cursor: pointer; font-size: 20px;
+    }
+    .mood-opt.selected { border-color: var(--pink); background: #fff0f5; }
+
+    /* 写真プレビュー */
+    .photo-thumb-wrap { display: none; position: relative; margin-top: 8px; }
+    .photo-thumb-wrap.show { display: block; }
+    .photo-thumb {
+      width: 100%; max-height: 160px; object-fit: cover; border-radius: 14px;
+    }
+    .photo-thumb-rm {
+      position: absolute; top: 6px; right: 6px;
+      background: rgba(0,0,0,0.55); color: white; border: none;
+      border-radius: 50%; width: 26px; height: 26px; cursor: pointer;
+      font-size: 12px; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* もっとキャッチ */
+    .more-catch {
+      margin-top: 16px; display: flex; gap: 9px;
+    }
+    .more-btn {
+      flex: 1; background: white; border: none; border-radius: 14px;
+      padding: 12px 6px; cursor: pointer; text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .more-btn:active { transform: scale(0.96); }
+    .more-btn .mb-emoji { font-size: 22px; display: block; margin-bottom: 3px; }
+    .more-btn .mb-label { font-size: 10px; font-weight: 700; color: var(--sub); }
+    .more-btn.t-hl  { border-top: 2.5px solid var(--yellow); }
+    .more-btn.t-id   { border-top: 2.5px solid var(--blue); }
+    .more-btn.t-fl   { border-top: 2.5px solid var(--pink); }
+    .more-btn.t-ph   { border-top: 2.5px solid var(--green); }
+
+    .more-label {
+      font-size: 11px; color: var(--sub); font-weight: 600; margin-top: 20px; margin-bottom: 8px;
+    }
+
+    /* ─── 今日のきろく ─── */
+    .log-card {
+      margin-top: 16px; background: white; border-radius: 20px;
+      padding: 16px; box-shadow: 0 3px 14px rgba(0,0,0,0.06);
+    }
+    .log-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .log-title { font-size: 15px; font-weight: 800; }
+    .log-count { font-size: 12px; color: var(--sub); font-weight: 600; }
+    .log-input-row { display: flex; gap: 7px; align-items: flex-end; }
+    .log-input {
+      flex: 1; background: var(--bg); border: none; border-radius: 12px;
+      padding: 10px 13px; font-size: 14px; font-family: inherit;
+      color: var(--txt); outline: none; line-height: 1.5;
+    }
+    .log-input:focus { background: white; box-shadow: 0 0 0 2px rgba(249,168,106,0.35); }
+    .log-input::placeholder { color: #cdbdb5; }
+    .log-mood-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--bg); border: 1.5px solid var(--border);
+      cursor: pointer; font-size: 18px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .log-mood-btn.has-mood { border-color: var(--pink); background: #fff0f5; }
+    .log-add-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--deep); border: none; color: white;
+      cursor: pointer; font-size: 18px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(232,103,58,0.35);
+    }
+    .log-add-btn:active { transform: scale(0.93); }
+    .log-mood-picker {
+      display: none; flex-wrap: wrap; gap: 5px;
+      margin-top: 8px; padding: 6px;
+      background: var(--bg); border-radius: 12px;
+    }
+    .log-mood-picker.show { display: flex; }
+    .log-mood-opt {
+      background: white; border: 2px solid transparent; border-radius: 9px;
+      padding: 4px 7px; cursor: pointer; font-size: 18px;
+    }
+    .log-mood-opt.selected { border-color: var(--pink); background: #fff0f5; }
+    .log-list { margin-top: 12px; }
+    .log-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.2s ease;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-item-time { font-size: 11px; color: #c4b4ac; flex-shrink: 0; margin-top: 2px; min-width: 40px; }
+    .log-item-mood { font-size: 16px; flex-shrink: 0; }
+    .log-item-text { font-size: 14px; line-height: 1.55; flex: 1; word-break: break-all; cursor: pointer; }
+    .log-item-text:hover { color: var(--deep); }
+    .log-item-del { background: none; border: none; color: #c4b4ac; cursor: pointer; font-size: 14px; padding: 2px 4px; flex-shrink: 0; line-height: 1; }
+    .log-item-del:hover { color: #e84040; }
+    .log-item-edit-input { font-size: 14px; flex: 1; background: white; border: 1.5px solid var(--warm); border-radius: 8px; padding: 2px 8px; font-family: inherit; color: var(--txt); outline: none; }
+    .log-empty { font-size: 13px; color: #c4b4ac; text-align: center; padding: 12px 0; }
+    .log-hint { font-size: 11px; color: #c4b4ac; margin-top: 6px; text-align: center; }
+
+    /* 今日のキャッチ（メイン画面下部） */
+    .today-entries { margin-top: 10px; }
+
+    /* ══════════════════════════════
+       TAB 2 : タイムライン
+       ══════════════════════════════ */
+    .entry-card {
+      background: white; border-radius: 18px;
+      padding: 13px 14px; margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .entry-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .entry-tag { font-size: 11px; font-weight: 700; border-radius: 8px; padding: 2px 8px; }
+    .tg-hl  { background: #fff8d6; color: #b08800; }
+    .tg-id  { background: #e0f5fb; color: #0079a0; }
+    .tg-fl  { background: #fff0f5; color: #c0486a; }
+    .tg-ph  { background: #e8f7e6; color: #3a8a36; }
+    .tg-cl  { background: #fff3e0; color: #c07a00; }
+    .tg-log { background: #f5f0ff; color: #6b4ea0; }
+    .entry-time { font-size: 11px; color: #c4b4ac; margin-left: auto; }
+    .entry-text { font-size: 14px; line-height: 1.65; word-break: break-all; }
+    .entry-photo { width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; margin-top: 8px; }
+    .entry-icon { font-size: 16px; }
+    .date-divider {
+      font-size: 11px; color: #c4b4ac; font-weight: 700;
+      text-align: center; position: relative; margin: 16px 0 8px;
+    }
+    .date-divider::before, .date-divider::after {
+      content:''; position:absolute; top:50%; width:28%; height:1px; background:#e8ddd7;
+    }
+    .date-divider::before{left:0} .date-divider::after{right:0}
+
+    /* ══════════════════════════════
+       TAB 3 : ふりかえり
+       ══════════════════════════════ */
+    .reflect-section { margin-top: 16px; }
+    .copy-claude-btn {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--warm), var(--deep));
+      color: white; border: none; border-radius: 18px;
+      font-size: 15px; font-weight: 800; cursor: pointer;
+      margin-top: 16px; margin-bottom: 4px;
+      box-shadow: 0 3px 14px rgba(232,103,58,0.35);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .copy-claude-btn:active { transform: scale(0.97); }
+    .reflect-card {
+      background: white; border-radius: 18px; padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 14px;
+    }
+    .reflect-title { font-size: 15px; font-weight: 800; margin-bottom: 10px; }
+    .stat-row { display: flex; gap: 0; }
+    .stat-item { flex: 1; text-align: center; border-right: 1px solid var(--border); padding: 8px 0; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num  { font-size: 26px; font-weight: 800; color: var(--deep); }
+    .stat-label { font-size: 10px; color: var(--sub); margin-top: 2px; }
+
+    /* 気分チャート（シンプルなドット表示） */
+    .mood-week { display: flex; gap: 4px; align-items: flex-end; justify-content: space-around; }
+    .mood-day { text-align: center; }
+    .mood-day-label { font-size: 10px; color: var(--sub); }
+    .mood-day-emoji { font-size: 22px; display: block; margin-top: 4px; }
+
+    /* 過去のハイライト */
+    .past-entry {
+      background: var(--bg); border-radius: 12px; padding: 10px 12px;
+      margin-top: 8px; font-size: 13px; line-height: 1.5; color: var(--txt);
+    }
+    .past-date { font-size: 11px; color: var(--sub); margin-bottom: 3px; }
+
+    .strength-insight {
+      background: linear-gradient(135deg, #fff8f0, #ffe8d6);
+      border: 1.5px solid #fdd0b0; border-radius: 16px;
+      padding: 14px; margin-top: 14px;
+    }
+    .si-title { font-size: 13px; font-weight: 700; color: var(--deep); margin-bottom: 6px; }
+    .si-text  { font-size: 13px; line-height: 1.6; color: #7a5c4c; }
+
+    /* ─── エクスポートモーダル ─── */
+    .modal-bg {
+      display:none; position:fixed; inset:0;
+      background:rgba(40,28,22,0.5); z-index:200;
+      align-items:center; justify-content:center; padding:24px;
+    }
+    .modal-bg.open { display:flex; }
+    .exp-modal {
+      background:white; border-radius:22px; padding:22px 20px;
+      width:100%; max-width:380px; box-shadow:0 8px 30px rgba(0,0,0,0.18);
+    }
+    .exp-modal h3 { font-size:16px; font-weight:800; margin-bottom:5px; }
+    .exp-modal p  { font-size:12px; color:var(--sub); line-height:1.6; margin-bottom:16px; }
+    .exp-opts { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+    .exp-opt-btn {
+      background:var(--bg); border:1.5px solid var(--border); border-radius:14px;
+      padding:12px 14px; cursor:pointer; text-align:left;
+    }
+    .exp-opt-btn:hover { border-color:var(--deep); }
+    .exp-ot { font-size:14px; font-weight:700; }
+    .exp-od { font-size:11px; color:var(--sub); margin-top:2px; }
+    .btn-close-exp {
+      width:100%; background:#ede3dc; border:none; border-radius:14px;
+      padding:12px; font-size:14px; font-weight:700; color:var(--sub); cursor:pointer;
+    }
+
+    /* ─── 過去の記録モーダル ─── */
+    .past-modal-bg {
+      display:none; position:fixed; inset:0;
+      background:rgba(40,28,22,0.5); z-index:200;
+      align-items:flex-end; justify-content:center;
+    }
+    .past-modal-bg.open { display:flex; }
+    .past-modal {
+      background:#fffaf6; border-radius:26px 26px 0 0;
+      width:100%; max-width:430px; padding:22px 18px calc(30px + var(--safe-bottom));
+    }
+    .past-modal-title { font-size:16px; font-weight:800; margin-bottom:16px; }
+    .past-date-row { display:flex; gap:8px; margin-bottom:14px; }
+    .past-date-input, .past-time-input {
+      border:1.5px solid var(--border); border-radius:12px;
+      padding:10px 12px; font-size:14px; font-family:inherit;
+      background:white; color:var(--txt); outline:none;
+    }
+    .past-date-input { flex:2; }
+    .past-time-input { flex:1; }
+    .past-type-row { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+    .past-type-btn {
+      background:var(--bg); border:1.5px solid var(--border); border-radius:20px;
+      padding:6px 12px; font-size:13px; cursor:pointer; font-weight:600; color:var(--sub);
+    }
+    .past-type-btn.sel { border-color:var(--deep); color:var(--deep); background:#fff3ed; }
+    .past-textarea {
+      width:100%; background:var(--bg); border:none; border-radius:16px;
+      padding:13px 16px; font-size:15px; font-family:inherit;
+      color:var(--txt); resize:none; outline:none; line-height:1.55;
+      min-height:80px; margin-bottom:12px; box-sizing:border-box;
+    }
+    .past-textarea:focus { background:white; box-shadow:0 0 0 2px rgba(249,168,106,0.4); }
+    .past-add-btn {
+      display:flex; align-items:center; gap:6px; justify-content:center;
+      width:100%; padding:11px; margin-bottom:14px;
+      background:white; border:1.5px dashed var(--border); border-radius:16px;
+      color:var(--sub); font-size:13px; font-weight:700; cursor:pointer;
+    }
+    .past-add-btn:hover { border-color:var(--warm); color:var(--deep); }
+
+    /* ─── 追加キャッチモーダル ─── */
+    .catch-modal-bg {
+      display:none; position:fixed; inset:0;
+      background:rgba(40,28,22,0.5); z-index:200;
+      align-items:flex-end; justify-content:center;
+    }
+    .catch-modal-bg.open { display:flex; }
+    .catch-modal {
+      background:#fffaf6; border-radius:26px 26px 0 0;
+      width:100%; max-width:430px; padding:22px 18px calc(30px + var(--safe-bottom));
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+    .cm-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .cm-icon { font-size:26px; }
+    .cm-title { font-size:17px; font-weight:800; }
+    .cm-sub { font-size:12px; color:var(--sub); margin-top:1px; }
+    .cm-textarea {
+      width:100%; background:var(--bg); border:none; border-radius:14px;
+      padding:12px 14px; font-size:15px; font-family:inherit; color:var(--txt);
+      resize:none; outline:none; line-height:1.6; min-height:70px; margin-bottom:10px;
+    }
+    .cm-textarea:focus { background:white; box-shadow:0 0 0 2px rgba(249,168,106,0.4); }
+    .cm-actions { display:flex; gap:10px; }
+    .cm-cancel {
+      flex:1; background:#ede3dc; border:none; border-radius:14px;
+      padding:13px; font-size:15px; font-weight:700; color:var(--sub); cursor:pointer;
+    }
+    .cm-save {
+      flex:2; background:linear-gradient(135deg,var(--warm),var(--deep)); border:none;
+      border-radius:14px; padding:13px; font-size:15px; font-weight:800;
+      color:white; cursor:pointer; box-shadow:0 4px 14px rgba(232,103,58,0.35);
+    }
+    .cm-save:active { transform:scale(0.97); }
+    .cm-photo-btn {
+      background:#edf7eb; border:2px dashed #a8d8a0; border-radius:12px;
+      padding:9px; cursor:pointer; text-align:center;
+      color:#5ca85a; font-size:12px; font-weight:600; width:100%; margin-bottom:10px;
+    }
+    #catchFileInput { display:none; }
+    .cm-photo-wrap { display:none; position:relative; margin-bottom:10px; }
+    .cm-photo-wrap.show { display:block; }
+    .cm-photo-img { width:100%; max-height:160px; object-fit:cover; border-radius:12px; }
+    .cm-photo-rm {
+      position:absolute; top:6px; right:6px;
+      background:rgba(0,0,0,0.5); color:white; border:none;
+      border-radius:50%; width:26px; height:26px; cursor:pointer; font-size:12px;
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    /* ─── トースト ─── */
+    .toast {
+      position:fixed; bottom:80px; left:50%;
+      transform:translateX(-50%) translateY(16px);
+      background:var(--txt); color:white; border-radius:20px;
+      padding:9px 20px; font-size:13px; font-weight:700;
+      opacity:0; transition:all 0.28s; z-index:300; white-space:nowrap;
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* empty */
+    .empty { text-align:center; padding:40px 20px; color:#c4b4ac; }
+    .empty-ico { font-size:44px; margin-bottom:10px; }
+    .empty p { font-size:13px; line-height:1.7; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ ヘッダー ═══ -->
+<div class="header">
+  <div>
+    <div class="header-title">🦋 キャッチ日記</div>
+    <div class="header-date" id="hDate"></div>
+  </div>
+  <div class="header-right">
+    <button class="hdr-btn" onclick="openExport()" title="書き出す">💾</button>
+    <div class="streak-badge" id="streak">✨ 0日</div>
+  </div>
+</div>
+
+<!-- ═══ TAB 1 : キャッチ ═══ -->
+<div class="tab-content active" id="tab-catch">
+  <div class="greeting" id="greetText">おはよう</div>
+  <div class="greeting-name">naoさん、今日はどんな日？</div>
+
+  <div class="q-card">
+    <button class="q-refresh" onclick="nextQ()">🔄</button>
+    <span class="q-strength-chip" id="qChip">💡 着想</span>
+    <div class="q-text" id="qText">読み込み中…</div>
+    <div class="answer-area">
+      <div class="answer-row">
+        <textarea class="answer-input" id="mainInput" rows="2" placeholder="ここに書いてね。声でもOK🎤"
+          oninput="autoGrow(this)"></textarea>
+        <button class="mic-btn" id="micBtn" onclick="toggleVoice()">🎤</button>
+      </div>
+      <div class="voice-status" id="voiceSt">🔴 聴いてるよ…話しかけて</div>
+
+      <!-- 写真プレビュー -->
+      <div class="photo-thumb-wrap" id="mainPhotoWrap">
+        <img class="photo-thumb" id="mainPhotoImg" src="">
+        <button class="photo-thumb-rm" onclick="removeMainPhoto()">✕</button>
+      </div>
+
+      <!-- 気分ピッカー -->
+      <div class="mood-tray" id="moodTray">
+        <button class="mood-opt" onclick="pickMood(this,'😊')">😊</button>
+        <button class="mood-opt" onclick="pickMood(this,'😄')">😄</button>
+        <button class="mood-opt" onclick="pickMood(this,'😌')">😌</button>
+        <button class="mood-opt" onclick="pickMood(this,'🥰')">🥰</button>
+        <button class="mood-opt" onclick="pickMood(this,'🤔')">🤔</button>
+        <button class="mood-opt" onclick="pickMood(this,'😴')">😴</button>
+        <button class="mood-opt" onclick="pickMood(this,'😤')">😤</button>
+        <button class="mood-opt" onclick="pickMood(this,'😢')">😢</button>
+        <button class="mood-opt" onclick="pickMood(this,'🤩')">🤩</button>
+        <button class="mood-opt" onclick="pickMood(this,'😎')">😎</button>
+        <button class="mood-opt" onclick="pickMood(this,'🫠')">🫠</button>
+        <button class="mood-opt" onclick="pickMood(this,'🤗')">🤗</button>
+      </div>
+
+      <div class="extras-row">
+        <button class="mood-btn" onclick="toggleMoodTray()">😊 きもち</button>
+        <button class="photo-btn-small" onclick="document.getElementById('mainFileInput').click()">📷 写真</button>
+        <input type="file" id="mainFileInput" accept="image/*" onchange="handleMainPhoto(event)">
+        <button class="send-btn" onclick="submitMain()">キャッチ！🦋</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 今日のきろく -->
+  <div class="log-card">
+    <div class="log-header">
+      <div class="log-title">📝 今日のきろく</div>
+      <div class="log-count" id="logCount">0件</div>
+    </div>
+    <div class="log-input-row">
+      <input class="log-input" id="logInput" type="text" placeholder="やったこと・あったこと…"
+>
+      <button class="log-mood-btn" id="logMoodBtn" onclick="toggleLogMood()">😊</button>
+      <button class="log-add-btn" onclick="addLog()">+</button>
+    </div>
+    <div class="log-mood-picker" id="logMoodPicker">
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😊')">😊</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😄')">😄</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😌')">😌</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🥰')">🥰</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🤔')">🤔</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😴')">😴</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😤')">😤</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😢')">😢</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🤩')">🤩</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'😎')">😎</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🫠')">🫠</button>
+      <button class="log-mood-opt" onclick="pickLogMood(this,'🤗')">🤗</button>
+    </div>
+    <div class="log-hint">やったこと書いて＋で追加。気分は😊で選べる。</div>
+    <div class="log-list" id="logList">
+      <div class="log-empty">今日はまだ何もなし。何した？</div>
+    </div>
+  </div>
+
+  <!-- もっとキャッチ -->
+  <div class="more-label">もっとキャッチしたいとき</div>
+  <div class="more-catch">
+    <button class="more-btn t-hl" onclick="openCatchModal('highlight')">
+      <span class="mb-emoji">🌟</span><span class="mb-label">ハイライト</span>
+    </button>
+    <button class="more-btn t-id" onclick="openCatchModal('idea')">
+      <span class="mb-emoji">💡</span><span class="mb-label">アイデア</span>
+    </button>
+    <button class="more-btn t-fl" onclick="openCatchModal('feeling')">
+      <span class="mb-emoji">❤️</span><span class="mb-label">きもち</span>
+    </button>
+    <button class="more-btn t-ph" onclick="openCatchModal('photo')">
+      <span class="mb-emoji">📷</span><span class="mb-label">写真</span>
+    </button>
+  </div>
+
+  <!-- 今日の記録プレビュー -->
+  <div class="more-label">今日のキャッチ <span id="todayCount">0</span>件</div>
+  <div id="todayEntries" class="today-entries"></div>
+</div>
+
+<!-- ═══ TAB 2 : タイムライン ═══ -->
+<div class="tab-content" id="tab-timeline">
+  <button class="past-add-btn" onclick="openPastModal()" style="margin-top:14px;">
+    <span>📅</span><span>過去の日の記録を追加する</span>
+  </button>
+  <div id="timeline"></div>
+</div>
+
+<!-- ═══ TAB 3 : ふりかえり ═══ -->
+<div class="tab-content" id="tab-reflect">
+  <div class="reflect-section">
+    <button class="copy-claude-btn" onclick="copyToday()">
+      <span>📋</span><span>今日の記録をクロードに投げる</span>
+    </button>
+    <div class="reflect-card">
+      <div class="reflect-title">📊 今週のキャッチ</div>
+      <div class="stat-row" id="weekStats">
+        <div class="stat-item"><div class="stat-num" id="ws0">0</div><div class="stat-label">🌟</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws1">0</div><div class="stat-label">💡</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws2">0</div><div class="stat-label">❤️</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws3">0</div><div class="stat-label">📷</div></div>
+        <div class="stat-item"><div class="stat-num" id="ws4">0</div><div class="stat-label">📝</div></div>
+        <div class="stat-item"><div class="stat-num" id="wsAll">0</div><div class="stat-label">合計</div></div>
+      </div>
+    </div>
+    <div class="reflect-card">
+      <div class="reflect-title">😊 今週の気分</div>
+      <div class="mood-week" id="moodWeek"></div>
+    </div>
+    <div class="reflect-card">
+      <div class="reflect-title">🔮 ふりかえりのヒント</div>
+      <div id="reflectHint" class="si-text"></div>
+    </div>
+    <div class="strength-insight" id="strengthCard">
+      <div class="si-title">🧬 naoさんの強みメモ</div>
+      <div class="si-text" id="strengthText"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ボトムナビ ═══ -->
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('catch',this)">
+    <span class="nav-icon">🦋</span><span class="nav-label">キャッチ</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('timeline',this)">
+    <span class="nav-icon">📖</span><span class="nav-label">タイムライン</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('reflect',this)">
+    <span class="nav-icon">🔮</span><span class="nav-label">ふりかえり</span>
+  </button>
+</div>
+
+<!-- ═══ 過去の記録モーダル ═══ -->
+<div class="past-modal-bg" id="pastModalBg" onclick="if(event.target.id==='pastModalBg')closePastModal()">
+  <div class="past-modal">
+    <div class="past-modal-title">📅 過去の記録を追加</div>
+    <div class="past-date-row">
+      <input class="past-date-input" type="date" id="pastDate">
+      <input class="past-time-input" type="time" id="pastTime">
+    </div>
+    <div class="past-type-row" id="pastTypeRow">
+      <button class="past-type-btn sel" onclick="selectPastType(this,'log')">📝 きろく</button>
+      <button class="past-type-btn" onclick="selectPastType(this,'highlight')">🌟 ハイライト</button>
+      <button class="past-type-btn" onclick="selectPastType(this,'idea')">💡 アイデア</button>
+      <button class="past-type-btn" onclick="selectPastType(this,'feeling')">❤️ きもち</button>
+    </div>
+    <textarea class="past-textarea" id="pastText" placeholder="何があった？何を思った？"></textarea>
+    <div class="cm-actions">
+      <button class="cm-cancel" onclick="closePastModal()">やめる</button>
+      <button class="cm-save" onclick="savePastEntry()">追加する 📝</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 追加キャッチモーダル ═══ -->
+<div class="catch-modal-bg" id="catchModalBg" onclick="if(event.target.id==='catchModalBg')closeCatchModal()">
+  <div class="catch-modal">
+    <div class="cm-header">
+      <span class="cm-icon" id="cmIcon">🌟</span>
+      <div><div class="cm-title" id="cmTitle">ハイライト</div>
+      <div class="cm-sub" id="cmSub">1行でOK</div></div>
+    </div>
+    <div class="cm-photo-wrap" id="cmPhotoWrap">
+      <img class="cm-photo-img" id="cmPhotoImg" src="">
+      <button class="cm-photo-rm" onclick="removeCmPhoto()">✕</button>
+    </div>
+    <textarea class="cm-textarea" id="cmInput" rows="3" placeholder="ここに書いてね…"></textarea>
+    <button class="cm-photo-btn" id="cmPhotoBtn" onclick="document.getElementById('catchFileInput').click()">📷 写真を添付する</button>
+    <input type="file" id="catchFileInput" accept="image/*" onchange="handleCmPhoto(event)">
+    <div class="cm-actions">
+      <button class="cm-cancel" onclick="closeCatchModal()">やめる</button>
+      <button class="cm-save" onclick="saveCatchModal()">キャッチ！🦋</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ エクスポートモーダル ═══ -->
+<div class="modal-bg" id="expBg" onclick="if(event.target.id==='expBg')closeExport()">
+  <div class="exp-modal">
+    <h3>💾 データを書き出す</h3>
+    <p>アプリ化するときの引っ越しに使えます。</p>
+    <div class="exp-opts">
+      <button class="exp-opt-btn" onclick="doExportJSON()">
+        <div class="exp-ot">📦 JSONで保存</div>
+        <div class="exp-od">完全なデータ。写真込み。アプリ移行用。</div>
+      </button>
+      <button class="exp-opt-btn" onclick="doExportText()">
+        <div class="exp-ot">📝 テキストで保存</div>
+        <div class="exp-od">メモアプリに貼れる読みやすい形式。</div>
+      </button>
+    </div>
+    <button class="btn-close-exp" onclick="closeExport()">閉じる</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════
+   IndexedDB
+   ══════════════════════════ */
+const DB='CatchDiaryDB', VER=1, ST='entries';
+let db=null;
+function idbOpen(){
+  return new Promise((ok,ng)=>{
+    const r=indexedDB.open(DB,VER);
+    r.onupgradeneeded=e=>{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains(ST)){
+        const s=d.createObjectStore(ST,{keyPath:'id'});
+        s.createIndex('ts','ts',{unique:false});
+      }
+    };
+    r.onsuccess=e=>{db=e.target.result;ok(db)};
+    r.onerror=e=>ng(e.target.error);
+  });
+}
+function idbAdd(e){
+  return new Promise((ok,ng)=>{
+    const tx=db.transaction(ST,'readwrite');
+    tx.objectStore(ST).add(e); tx.oncomplete=ok; tx.onerror=e2=>ng(e2.target.error);
+  });
+}
+function idbAll(){
+  return new Promise((ok,ng)=>{
+    const r=db.transaction(ST,'readonly').objectStore(ST).index('ts').getAll();
+    r.onsuccess=e=>ok(e.target.result.reverse());
+    r.onerror=e=>ng(e.target.error);
+  });
+}
+function idbDelete(id){
+  return new Promise((ok,ng)=>{
+    const tx=db.transaction(ST,'readwrite');
+    tx.objectStore(ST).delete(id); tx.oncomplete=ok; tx.onerror=e=>ng(e.target.error);
+  });
+}
+function idbUpdate(entry){
+  return new Promise((ok,ng)=>{
+    const tx=db.transaction(ST,'readwrite');
+    tx.objectStore(ST).put(entry); tx.oncomplete=ok; tx.onerror=e=>ng(e.target.error);
+  });
+}
+
+/* ══════════════════════════
+   データ
+   ══════════════════════════ */
+let entries=[], qIdx=0, mainPhoto=null, mainMood='', cmPhoto=null, cmType='highlight';
+let recognition=null, isRec=false;
+
+const TC={
+  highlight:{icon:'🌟',t:'ハイライト',s:'今日あったこと（1行でOK）',tagCls:'tg-hl',tagL:'🌟 ハイライト'},
+  idea:     {icon:'💡',t:'アイデア',  s:'思いついたこと（断片でOK）',tagCls:'tg-id',tagL:'💡 アイデア'},
+  feeling:  {icon:'❤️',t:'きもち',  s:'絵文字だけでもOK',          tagCls:'tg-fl',tagL:'❤️ きもち'},
+  photo:    {icon:'📷',t:'写真',    s:'写真＋ひとこと',             tagCls:'tg-ph',tagL:'📷 写真'},
+  claude:   {icon:'🤖',t:'Claudeへの返事',s:'',                   tagCls:'tg-cl',tagL:'🤖 Claude'},
+  log:      {icon:'📝',t:'きろく',  s:'今日やったこと',             tagCls:'tg-log',tagL:'📝 きろく'},
+};
+
+/* ── 質問（naoさんの5つの強みに基づいて設計）── */
+const QS=[
+  /* 着想 (Ideation) */
+  {q:'今日、何か「あ！」ってひらめいたことはあった？',          cat:'着想',cls:'chip-ideation'},
+  {q:'最近、頭に浮かんだアイデアや「やってみたいこと」はある？', cat:'着想',cls:'chip-ideation'},
+  {q:'面白い組み合わせや、新しい発見はあった？小さくてもOK',    cat:'着想',cls:'chip-ideation'},
+  {q:'最近読んだ・見た・聞いたもので、心に残ったものは？',      cat:'着想',cls:'chip-ideation'},
+  {q:'「これとこれ、つながるかも？」って思ったことある？',      cat:'着想',cls:'chip-ideation'},
+  /* 内省 (Intellection) */
+  {q:'今、頭の中でぐるぐるしてることはある？言葉にならなくてもOK', cat:'内省',cls:'chip-intellect'},
+  {q:'最近、自分について「気づいたこと」はある？',                 cat:'内省',cls:'chip-intellect'},
+  {q:'今日、心がざわっとした瞬間はいつだった？',                   cat:'内省',cls:'chip-intellect'},
+  {q:'最近、じっくり考えていることは何？',                         cat:'内省',cls:'chip-intellect'},
+  /* 運命思考 (Connectedness) */
+  {q:'今日、誰かとつながれたなって感じた瞬間はあった？',           cat:'運命思考',cls:'chip-connect'},
+  {q:'最近、「不思議な縁だな」と思った出来事はある？',             cat:'運命思考',cls:'chip-connect'},
+  {q:'今日、誰かのことをふと思い出した？',                         cat:'運命思考',cls:'chip-connect'},
+  {q:'今日、感謝したいことはある？',                               cat:'運命思考',cls:'chip-connect'},
+  /* 回復志向 (Restorative) */
+  {q:'今日、何か「解決できた！」ことはあった？小さくてもOK',       cat:'回復志向',cls:'chip-restorative'},
+  {q:'「もっとこうしたいな」って思ったことはある？',               cat:'回復志向',cls:'chip-restorative'},
+  {q:'最近、自分の中で「良くなったな」と感じることは？',           cat:'回復志向',cls:'chip-restorative'},
+  /* 適応性 (Adaptability) */
+  {q:'今日、予想外だったことは何？',                               cat:'適応性',cls:'chip-adaptable'},
+  {q:'流れに身を任せてうまくいったことはあった？',                 cat:'適応性',cls:'chip-adaptable'},
+  {q:'今この瞬間、何を感じてる？',                                 cat:'適応性',cls:'chip-adaptable'},
+  /* 日常・感覚 */
+  {q:'今日のハイライトは何？ひとことでOK！',                       cat:'今日のこと',cls:'chip-daily'},
+  {q:'今の気分を色で例えると何色？',                               cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日食べたもので一番おいしかったのは？',                     cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日、笑った瞬間はあった？',                                 cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日の空、どんな空だった？',                                 cat:'今日のこと',cls:'chip-daily'},
+  {q:'今日の気分を絵文字ひとつで表すと？',                         cat:'今日のこと',cls:'chip-daily'},
+];
+
+/* ── Claude返答（強み別） ── */
+const REPLIES={
+  '着想':      ['そのひらめき、大事にして！💡','着想の才能が動いてるね！✨','面白い！それ記録しといて'],
+  '内省':      ['深く考えられるの、naoさんの強みだよ','言葉にしてくれてありがとう💛','考え続けることに価値がある✨'],
+  '運命思考':  ['つながりを感じられるの素敵🌿','その縁、大事にして','人とのつながりが力になるね💛'],
+  '回復志向':  ['そういう気づき、回復志向の才能だよ💪','次に活かせばOK！','改善できるって思えること自体がすごい✨'],
+  '適応性':    ['今に集中できてる証拠だね✨','柔軟に動けるの、すごい才能！','流れに乗れてるね🌊'],
+  '今日のこと':['教えてくれてありがとう😊','いいね、ちゃんとキャッチできた🦋','その瞬間を記録できてよかった✨'],
+};
+
+/* ── 強みメモ ── */
+const STR_TIPS=[
+  '着想の才能：アイデアは出てくるけど、まとまらなくて当然。断片をキャッチしておけば、後から自然とつながってくる。',
+  '内省の才能：考えることが好きだから、言葉にしなくても「考えた」こと自体を記録するだけで価値がある。',
+  '運命思考の才能：人やモノのつながりに気づく力がある。日記の中にそのつながりが見えてくるはず。',
+  '回復志向の才能：「もっとよくしたい」が自然に出てくる。それは弱さじゃなく、最大の武器。',
+  '適応性の才能：計画通りじゃなくてもいい。その日の流れのまま記録すれば、それが一番自然なnaoさんの記録になる。',
+];
+
+/* ── ふりかえりヒント ── */
+const REFLECT_HINTS=[
+  '今週の記録を眺めてみて。同じテーマが繰り返し出てきたら、それが今のnaoさんにとって大切なことかも。',
+  '着想タイプのnaoさんは、断片的なアイデアをあとで見返すと新しいつながりが見えることが多い。',
+  'たくさん書けない日があっても、絵文字ひとつでも記録があれば十分。「記録がある」こと自体が大事。',
+  '回復志向の強みがあるから、振り返りで「次はこうしよう」が自然に出てくる。それをアイデアとしてキャッチして。',
+  '感覚的に感じたことを言葉にする必要はない。写真1枚、絵文字ひとつ、それも立派な記録。',
+];
+
+/* ══════════════════════════
+   起動
+   ══════════════════════════ */
+document.getElementById('hDate').textContent=
+  new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+
+setGreeting();
+idbOpen().then(async()=>{
+  entries=await idbAll();
+  render(); initQ();
+}).catch(()=>{ initQ(); toast('DB初期化エラー'); });
+
+function setGreeting(){
+  const h=new Date().getHours();
+  let g='こんにちは';
+  if(h<5) g='夜ふかしさん🌙';
+  else if(h<10) g='おはよう☀️';
+  else if(h<17) g='こんにちは🌤';
+  else if(h<21) g='おつかれさま🌇';
+  else g='おやすみ前に🌙';
+  document.getElementById('greetText').textContent=g;
+}
+
+/* ══════════════════════════
+   質問
+   ══════════════════════════ */
+function initQ(){
+  /* 時間帯に合った質問を優先 */
+  const h=new Date().getHours();
+  const pool=QS.filter(q=>{
+    if(h<10) return q.cat==='今日のこと'||q.cat==='適応性';
+    if(h<17) return q.cat==='着想'||q.cat==='内省'||q.cat==='今日のこと';
+    return true;
+  });
+  const pick=pool[Math.floor(Math.random()*pool.length)];
+  qIdx=QS.indexOf(pick);
+  showQ();
+}
+function showQ(){
+  const q=QS[qIdx];
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qChip').textContent=
+    (q.cat==='着想'?'💡':q.cat==='内省'?'🧠':q.cat==='運命思考'?'🌿':q.cat==='回復志向'?'🔧':q.cat==='適応性'?'🌊':'📝')+' '+q.cat;
+  document.getElementById('qChip').className='q-strength-chip '+q.cls;
+}
+function nextQ(){
+  qIdx=(qIdx+1)%QS.length; showQ();
+}
+
+/* ══════════════════════════
+   メイン送信
+   ══════════════════════════ */
+async function submitMain(){
+  const text=document.getElementById('mainInput').value.trim();
+  if(!text&&!mainPhoto&&!mainMood){ toast('何かキャッチしてね✍️'); return; }
+  const now=new Date();
+  const q=QS[qIdx];
+  let finalText=mainMood?(mainMood+' '+text):text;
+  const entry=mkEntry('claude', finalText, mainPhoto, now);
+  entry.question=q.q;
+  entry.strength=q.cat;
+  await persist(entry);
+  /* Claude返事 */
+  const reps=REPLIES[q.cat]||REPLIES['今日のこと'];
+  toast(reps[Math.floor(Math.random()*reps.length)]);
+  /* リセット */
+  document.getElementById('mainInput').value='';
+  mainPhoto=null; mainMood='';
+  document.getElementById('mainPhotoWrap').classList.remove('show');
+  document.querySelectorAll('.mood-opt').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('moodTray').classList.remove('show');
+  nextQ();
+}
+
+/* ══════════════════════════
+   追加キャッチモーダル
+   ══════════════════════════ */
+function openCatchModal(type){
+  cmType=type; cmPhoto=null;
+  const c=TC[type];
+  document.getElementById('cmIcon').textContent=c.icon;
+  document.getElementById('cmTitle').textContent=c.t;
+  document.getElementById('cmSub').textContent=c.s;
+  document.getElementById('cmInput').value='';
+  document.getElementById('cmPhotoWrap').classList.remove('show');
+  document.getElementById('cmPhotoBtn').style.display = type==='photo'?'none':'block';
+  document.getElementById('catchModalBg').classList.add('open');
+  if(type==='photo') document.getElementById('catchFileInput').click();
+  else setTimeout(()=>document.getElementById('cmInput').focus(),300);
+}
+function closeCatchModal(){ document.getElementById('catchModalBg').classList.remove('open'); }
+
+/* ── 過去の記録 ── */
+let pastType='log';
+function openPastModal(){
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('pastDate').value=today;
+  document.getElementById('pastTime').value='12:00';
+  document.getElementById('pastText').value='';
+  pastType='log';
+  document.querySelectorAll('.past-type-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.past-type-btn')[0].classList.add('sel');
+  document.getElementById('pastModalBg').classList.add('open');
+  setTimeout(()=>document.getElementById('pastText').focus(),300);
+}
+function closePastModal(){ document.getElementById('pastModalBg').classList.remove('open'); }
+function selectPastType(btn,type){
+  document.querySelectorAll('.past-type-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); pastType=type;
+}
+async function savePastEntry(){
+  const text=document.getElementById('pastText').value.trim();
+  if(!text){ toast('何か書いてみて✍️'); return; }
+  const dateVal=document.getElementById('pastDate').value;
+  const timeVal=document.getElementById('pastTime').value||'12:00';
+  if(!dateVal){ toast('日付を選んでね📅'); return; }
+  const dt=new Date(`${dateVal}T${timeVal}`);
+  const entry=mkEntry(pastType,text,null,dt);
+  await persist(entry);
+  closePastModal();
+  toast('過去の記録を追加した！📝');
+}
+async function saveCatchModal(){
+  const text=document.getElementById('cmInput').value.trim();
+  if(!text&&!cmPhoto){ toast('何かキャッチして✍️'); return; }
+  const entry=mkEntry(cmType,text,cmPhoto,new Date());
+  await persist(entry);
+  closeCatchModal();
+  toast('キャッチ！🦋');
+}
+function handleCmPhoto(e){
+  const f=e.target.files[0]; if(!f) return;
+  resizeImg(f,url=>{
+    cmPhoto=url;
+    document.getElementById('cmPhotoImg').src=url;
+    document.getElementById('cmPhotoWrap').classList.add('show');
+    if(!document.getElementById('catchModalBg').classList.contains('open')) openCatchModal('photo');
+  }); e.target.value='';
+}
+function removeCmPhoto(){ cmPhoto=null; document.getElementById('cmPhotoWrap').classList.remove('show'); }
+
+/* ══════════════════════════
+   気分・写真（メイン画面）
+   ══════════════════════════ */
+function toggleMoodTray(){ document.getElementById('moodTray').classList.toggle('show'); }
+function pickMood(el,emoji){
+  document.querySelectorAll('.mood-opt').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  mainMood=emoji;
+}
+function handleMainPhoto(e){
+  const f=e.target.files[0]; if(!f) return;
+  resizeImg(f,url=>{
+    mainPhoto=url;
+    document.getElementById('mainPhotoImg').src=url;
+    document.getElementById('mainPhotoWrap').classList.add('show');
+  }); e.target.value='';
+}
+function removeMainPhoto(){ mainPhoto=null; document.getElementById('mainPhotoWrap').classList.remove('show'); }
+function resizeImg(file,cb){
+  const img=new Image(), u=URL.createObjectURL(file);
+  img.onload=()=>{
+    const c=document.createElement('canvas'), maxW=800, s=img.width>maxW?maxW/img.width:1;
+    c.width=img.width*s; c.height=img.height*s;
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    cb(c.toDataURL('image/jpeg',0.75));
+    URL.revokeObjectURL(u);
+  }; img.src=u;
+}
+
+/* ══════════════════════════
+   音声認識
+   ══════════════════════════ */
+function toggleVoice(){ isRec?stopV():startV(); }
+function startV(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ toast('音声認識に対応していないブラウザです'); return; }
+  recognition=new SR(); recognition.lang='ja-JP';
+  recognition.continuous=false; recognition.interimResults=true;
+  recognition.onstart=()=>{
+    isRec=true;
+    document.getElementById('micBtn').classList.add('recording');
+    document.getElementById('micBtn').textContent='🔴';
+    document.getElementById('voiceSt').classList.add('show');
+  };
+  recognition.onresult=e=>{
+    let t='';
+    for(let i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript;
+    document.getElementById('mainInput').value=t;
+  };
+  recognition.onend=()=>stopV();
+  recognition.onerror=()=>stopV();
+  recognition.start();
+}
+function stopV(){
+  if(recognition) try{recognition.stop();}catch(e){}
+  isRec=false;
+  document.getElementById('micBtn').classList.remove('recording');
+  document.getElementById('micBtn').textContent='🎤';
+  document.getElementById('voiceSt').classList.remove('show');
+}
+
+/* ══════════════════════════
+   データ操作
+   ══════════════════════════ */
+function mkEntry(type,text,photo,now){
+  return {
+    id: Date.now()+Math.random(),
+    type, text, photo: photo||null, mood: mainMood||'',
+    ts: now.getTime(),
+    timeStr: now.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}),
+    dateStr: now.toLocaleDateString('ja-JP',{month:'long',day:'numeric',weekday:'short'}),
+  };
+}
+async function persist(entry){
+  try{ await idbAdd(entry); }catch(e){ console.error(e); }
+  entries.unshift(entry);
+  render();
+}
+async function deleteLog(id){
+  entries=entries.filter(e=>e.id!==id);
+  try{ await idbDelete(id); }catch(e){ console.error(e); }
+  renderLog();
+  toast('削除しました🗑️');
+}
+function editLogInline(span,id){
+  const entry=entries.find(e=>e.id===id);
+  if(!entry) return;
+  const inp=document.createElement('input');
+  inp.className='log-item-edit-input';
+  inp.value=entry.text;
+  span.replaceWith(inp);
+  inp.focus(); inp.select();
+  const save=async()=>{
+    const newText=inp.value.trim();
+    if(newText && newText!==entry.text){
+      entry.text=newText;
+      try{ await idbUpdate(entry); }catch(e){ console.error(e); }
+      toast('修正した！✏️');
+    }
+    renderLog();
+  };
+  inp.addEventListener('blur',save);
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && !e.isComposing){ e.preventDefault(); inp.blur(); }
+    if(e.key==='Escape'){ inp.removeEventListener('blur',save); renderLog(); }
+  });
+}
+
+/* ══════════════════════════
+   レンダリング
+   ══════════════════════════ */
+function render(){
+  renderToday(); renderLog(); renderTimeline(); renderReflect(); updateStreak();
+}
+function copyToday(){
+  const today=new Date();
+  const tod=today.toDateString();
+  const todayEntries=entries.filter(e=>new Date(e.ts).toDateString()===tod)
+    .slice().reverse();
+  if(!todayEntries.length){ toast('今日のキャッチがまだないよ！🦋'); return; }
+  const dow=['日','月','火','水','木','金','土'][today.getDay()];
+  const d=today.toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+  const typeIcon={highlight:'🌟',idea:'💡',feeling:'❤️',photo:'📷',claude:'🤖',log:'📝'};
+  let lines=[`【キャッチ日記 ${d}（${dow}）】\n`];
+  todayEntries.forEach(e=>{
+    const icon=typeIcon[e.type]||'📌';
+    const mood=(e.mood&&e.mood!=='😊')?e.mood+' ':'';
+    if(e.type==='log'){
+      lines.push(`${icon} ${e.timeStr}  ${mood}${e.text}`);
+    } else {
+      lines.push(`${icon} ${mood}${e.text}`);
+    }
+  });
+  lines.push('\n---');
+  lines.push('↑これが今日のキャッチです。まとめ・気づき・ひとことをください！');
+  const txt=lines.join('\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    toast('コピーした！クロードのチャットに貼り付けてね📋');
+  }).catch(()=>{
+    const el=document.createElement('textarea');
+    el.value=txt; document.body.appendChild(el);
+    el.select(); document.execCommand('copy');
+    document.body.removeChild(el);
+    toast('コピーした！クロードのチャットに貼り付けてね📋');
+  });
+}
+function renderToday(){
+  const tod=new Date().toDateString();
+  const t=entries.filter(e=>new Date(e.ts).toDateString()===tod);
+  document.getElementById('todayCount').textContent=t.length;
+  const el=document.getElementById('todayEntries');
+  if(!t.length){ el.innerHTML='<div class="empty"><p>今日はまだキャッチなし。<br>上の質問に答えてみよう🦋</p></div>'; return; }
+  el.innerHTML=t.map(e=>cardHTML(e)).join('');
+}
+function renderTimeline(){
+  const el=document.getElementById('timeline');
+  if(!entries.length){ el.innerHTML='<div class="empty"><div class="empty-ico">🦋</div><p>まだ記録がありません。<br>最初のキャッチをしてみよう！</p></div>'; return; }
+  let h='',last='';
+  entries.forEach(e=>{
+    if(e.dateStr!==last){ h+=`<div class="date-divider">${e.dateStr}</div>`; last=e.dateStr; }
+    h+=cardHTML(e);
+  });
+  el.innerHTML=h;
+}
+function cardHTML(e){
+  const c=TC[e.type]||TC.highlight;
+  const ph=e.photo?`<img class="entry-photo" src="${e.photo}" loading="lazy">`:'';
+  const qLine=e.question?`<div style="font-size:12px;color:var(--sub);margin-bottom:3px">Q: ${esc(e.question)}</div>`:'';
+  const moodBadge=(e.type==='log'&&e.mood)?`<span style="font-size:16px;margin-left:4px">${e.mood}</span>`:'';
+  return `<div class="entry-card">
+    <div class="entry-top">
+      <span class="entry-icon">${c.icon}</span>
+      <span class="entry-tag ${c.tagCls}">${c.tagL}</span>${moodBadge}
+      <span class="entry-time">${e.timeStr}</span>
+    </div>
+    ${qLine}
+    ${e.text?`<div class="entry-text">${esc(e.text)}</div>`:''}
+    ${ph}
+  </div>`;
+}
+
+function renderReflect(){
+  /* 今週の統計 */
+  const now=new Date(), d=now.getDay(), mon=new Date(now);
+  mon.setDate(now.getDate()-(d===0?6:d-1)); mon.setHours(0,0,0,0);
+  const week=entries.filter(e=>e.ts>=mon.getTime());
+  document.getElementById('ws0').textContent=week.filter(e=>e.type==='highlight').length;
+  document.getElementById('ws1').textContent=week.filter(e=>e.type==='idea').length;
+  document.getElementById('ws2').textContent=week.filter(e=>e.type==='feeling').length;
+  document.getElementById('ws3').textContent=week.filter(e=>e.type==='photo').length;
+  document.getElementById('ws4').textContent=week.filter(e=>e.type==='log').length;
+  document.getElementById('wsAll').textContent=week.length;
+
+  /* 気分（曜日ごとの最初の気分） */
+  const dayNames=['月','火','水','木','金','土','日'];
+  let moodHTML='';
+  for(let i=0;i<7;i++){
+    const dd=new Date(mon); dd.setDate(mon.getDate()+i);
+    const dayEntries=entries.filter(e=>{
+      const ed=new Date(e.ts); return ed.toDateString()===dd.toDateString();
+    });
+    const mood=dayEntries.find(e=>e.mood)?.mood || (dayEntries.length?'📝':'·');
+    const isToday=dd.toDateString()===now.toDateString();
+    moodHTML+=`<div class="mood-day">
+      <div class="mood-day-label" style="${isToday?'font-weight:800;color:var(--deep)':''}">${dayNames[i]}</div>
+      <span class="mood-day-emoji">${mood}</span>
+    </div>`;
+  }
+  document.getElementById('moodWeek').innerHTML=moodHTML;
+
+  /* ヒント */
+  document.getElementById('reflectHint').textContent=
+    REFLECT_HINTS[Math.floor(Math.random()*REFLECT_HINTS.length)];
+
+  /* 強みメモ */
+  document.getElementById('strengthText').textContent=
+    STR_TIPS[Math.floor(Math.random()*STR_TIPS.length)];
+}
+
+function updateStreak(){
+  const days=new Set(entries.map(e=>new Date(e.ts).toDateString())).size;
+  document.getElementById('streak').textContent=`✨ ${days}日`;
+}
+
+/* ══════════════════════════
+   タブ切り替え
+   ══════════════════════════ */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='reflect') renderReflect();
+  if(name==='timeline') renderTimeline();
+  window.scrollTo(0,0);
+}
+
+/* ══════════════════════════
+   エクスポート
+   ══════════════════════════ */
+function openExport(){ document.getElementById('expBg').classList.add('open'); }
+function closeExport(){ document.getElementById('expBg').classList.remove('open'); }
+function doExportJSON(){
+  const d=JSON.stringify(entries,null,2);
+  dl(new Blob([d],{type:'application/json'}),'catch-diary-'+dateTag()+'.json');
+  closeExport(); toast('JSON書き出し完了！');
+}
+function doExportText(){
+  let t='🦋 キャッチ日記\n書き出し: '+new Date().toLocaleDateString('ja-JP')+'\n'+'─'.repeat(28)+'\n';
+  let last='';
+  [...entries].reverse().forEach(e=>{
+    if(e.dateStr!==last){ t+='\n📅 '+e.dateStr+'\n'; last=e.dateStr; }
+    const c=TC[e.type]||TC.highlight;
+    t+=c.icon+' ['+e.timeStr+'] ';
+    if(e.question) t+='Q:'+e.question+' → ';
+    if(e.text) t+=e.text; if(e.photo) t+=' [写真]'; t+='\n';
+  });
+  dl(new Blob([t],{type:'text/plain;charset=utf-8'}),'catch-diary-'+dateTag()+'.txt');
+  closeExport(); toast('テキスト書き出し完了！');
+}
+function dl(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
+function dateTag(){ return new Date().toISOString().slice(0,10); }
+
+/* ══════════════════════════
+   今日のきろく
+   ══════════════════════════ */
+let logMood='😊';
+function toggleLogMood(){ document.getElementById('logMoodPicker').classList.toggle('show'); }
+function pickLogMood(el,emoji){
+  document.querySelectorAll('.log-mood-opt').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  logMood=emoji;
+  document.getElementById('logMoodBtn').textContent=emoji;
+  document.getElementById('logMoodBtn').classList.add('has-mood');
+  document.getElementById('logMoodPicker').classList.remove('show');
+}
+async function addLog(){
+  const inp=document.getElementById('logInput');
+  const text=inp.value.trim();
+  if(!text){ toast('何をした？書いてみて✍️'); return; }
+  const now=new Date();
+  const entry=mkEntry('log',text,null,now);
+  entry.mood=logMood;
+  await persist(entry);
+  inp.value='';
+  toast('記録した！📝');
+}
+function renderLog(){
+  const tod=new Date().toDateString();
+  const logs=entries.filter(e=>e.type==='log'&&new Date(e.ts).toDateString()===tod);
+  const el=document.getElementById('logList');
+  document.getElementById('logCount').textContent=logs.length+'件';
+  if(!logs.length){
+    el.innerHTML='<div class="log-empty">今日はまだ何もなし。何した？</div>';
+    return;
+  }
+  el.innerHTML=logs.map(e=>
+    `<div class="log-item" data-id="${e.id}">
+      <span class="log-item-time">${e.timeStr}</span>
+      <span class="log-item-mood">${e.mood||'📝'}</span>
+      <span class="log-item-text" onclick="editLogInline(this,${e.id})" title="タップして編集">${esc(e.text)}</span>
+      <button class="log-item-del" onclick="deleteLog(${e.id})" title="削除">✕</button>
+    </div>`
+  ).join('');
+}
+
+/* ══════════════════════════
+   ユーティリティ
+   ══════════════════════════ */
+function autoGrow(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,160)+'px'; }
+function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* Service Worker登録 */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
